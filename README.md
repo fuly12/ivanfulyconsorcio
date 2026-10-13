@@ -1,4 +1,4 @@
-# ivanfulyconsorcio.com.br
+# ivanfulyconsorcios.com.br
 
 Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 
