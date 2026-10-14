@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: noite no Rio. Fundo escuro com grade e brilho; no topo, a carta de crédito em holograma com as cotas do grupo orbitando; seções de vidro numa coluna larga. Tema único escuro, por escolha. */
 :root {
@@ -41,7 +41,7 @@
   --wa-ink: #03190B;
   --grid: rgba(120, 220, 255, .055);
 
-  --display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --display: "Sora", "Segoe UI", system-ui, -apple-system, sans-serif;
   --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "Martian Mono", ui-monospace, Menlo, Consolas, monospace;
 
@@ -65,8 +65,8 @@ body {
 }
 .wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
 h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
-h2 { font-weight: 700; font-size: clamp(1.55rem, 3.5vw, 2.6rem); line-height: 1.12; letter-spacing: -.025em; }
-h3 { font-weight: 700; font-size: 1.05rem; line-height: 1.25; letter-spacing: -.01em; }
+h2 { font-weight: 600; font-size: clamp(1.6rem, 3.6vw, 2.7rem); line-height: 1.12; letter-spacing: -.03em; }
+h3 { font-weight: 600; font-size: 1.08rem; line-height: 1.25; letter-spacing: -.015em; }
 p { margin: 0; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 8px; }
@@ -146,7 +146,7 @@ header, main, footer { position: relative; z-index: 1; }
   -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
 }
 .brand { display: grid; gap: 3px; text-decoration: none; }
-.brand-name { font-family: var(--display); font-weight: 700; font-size: .98rem; letter-spacing: .01em; line-height: 1; }
+.brand-name { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; line-height: 1; }
 .brand-sub { font-family: var(--mono); font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .nav { display: flex; gap: 24px; font-size: .93rem; font-weight: 500; color: var(--muted); }
 .nav a { text-decoration: none; transition: color .15s ease; }
@@ -159,7 +159,7 @@ header, main, footer { position: relative; z-index: 1; }
   padding-block: clamp(32px, 6vw, 88px) clamp(48px, 7vw, 96px);
 }
 .hero-copy { display: grid; gap: 24px; align-content: start; min-width: 0; }
-.hero h1 { font-weight: 800; font-size: clamp(1.95rem, 5vw, 3.9rem); line-height: 1.05; letter-spacing: -.035em; }
+.hero h1 { font-weight: 700; font-size: clamp(2.2rem, 5.4vw, 4.3rem); line-height: 1.04; letter-spacing: -.04em; }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
 .pills { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; margin: 0; }
 .pills li {
@@ -221,7 +221,7 @@ header, main, footer { position: relative; z-index: 1; }
   color: var(--gold); padding: 4px 10px; border: 1px solid rgba(255, 193, 77, .45); border-radius: 999px; background: rgba(255, 193, 77, .08);
 }
 .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
-.carta-titulo { font-family: var(--display); font-weight: 800; font-size: clamp(1.3rem, 3.4vw, 1.85rem); line-height: 1.1; letter-spacing: -.02em; }
+.carta-titulo { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 3.4vw, 1.85rem); line-height: 1.1; letter-spacing: -.02em; }
 .carta-sub { color: var(--muted); font-size: .92rem; }
 .carta-base { display: flex; justify-content: space-between; align-items: end; gap: 12px; font-size: .82rem; font-weight: 600; }
 .troca { animation: trocar .45s ease; }
@@ -287,7 +287,7 @@ header, main, footer { position: relative; z-index: 1; }
   min-width: 0; display: grid; gap: 12px; align-content: start; padding: 26px 24px;
   border-radius: var(--radius); border: 1px solid var(--line); background: var(--glass);
 }
-.passo-n { font-family: var(--display); font-weight: 800; font-size: 3rem; line-height: 1; color: transparent; -webkit-text-stroke: 1.5px var(--cyan); }
+.passo-n { font-family: var(--display); font-weight: 700; font-size: 3rem; line-height: 1; color: transparent; -webkit-text-stroke: 1.5px var(--cyan); }
 .passo p { color: var(--muted); font-size: .97rem; }
 
 /* Investimento */
@@ -366,7 +366,7 @@ thead .col-cons { color: var(--cyan); }
 .sobre { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(22px, 4vw, 52px); align-items: start; }
 .avatar {
   width: clamp(104px, 14vw, 168px); max-width: 100%; aspect-ratio: 1; border-radius: 50%;
-  display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: clamp(1.8rem, 3.6vw, 3rem);
+  display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 3.6vw, 3rem);
   border: 3px solid transparent;
   background:
     radial-gradient(circle at 30% 25%, #1C2B46, #0B1120 70%) padding-box,
