@@ -3,7 +3,7 @@
 
 Modos (variável MODO):
   agenda     publica o próximo post cujo horário já chegou (uso normal, pelo agendamento)
-  verificar  confere o token e testa o próximo post da agenda sem publicar nada
+  verificar  confere o token e testa o próximo post de imagem e os vídeos da agenda, sem publicar nada
 """
 import json
 import os
@@ -59,16 +59,27 @@ def chamar(metodo, caminho, **params):
         raise SystemExit(f"Erro da API do Instagram ({e.code}) em {metodo} {caminho}: {msg}")
 
 
-def url_da_imagem(post):
-    repo = os.environ.get("GITHUB_REPOSITORY", "fuly12/ivanfulyconsorcio")
-    versao = os.environ.get("GITHUB_SHA", "main")
-    return f"https://raw.githubusercontent.com/{repo}/{versao}/{post['imagem']}"
+def url_da_midia(caminho):
+    base = carregar(CONFIG, {}).get("base_midia")
+    if not base:
+        repo = os.environ.get("GITHUB_REPOSITORY", "fuly12/ivanfulyconsorcio")
+        versao = os.environ.get("GITHUB_SHA", "main")
+        base = f"https://raw.githubusercontent.com/{repo}/{versao}/"
+    return base + caminho
 
 
 def preparar(ig_id, post):
-    """Cria o conteiner de mídia (ainda não publica) e espera o Instagram processar a imagem."""
-    conteiner = chamar("POST", f"{ig_id}/media", image_url=url_da_imagem(post), caption=post["legenda"])["id"]
-    for _ in range(24):
+    """Cria o conteiner de mídia (ainda não publica) e espera o Instagram processar a imagem ou o vídeo."""
+    if "video" in post:
+        params = {"media_type": "REELS", "video_url": url_da_midia(post["video"]), "share_to_feed": "true"}
+        if "capa_ms" in post:
+            params["thumb_offset"] = post["capa_ms"]
+        tentativas = 72  # vídeo demora mais para processar (até 6 minutos)
+    else:
+        params = {"image_url": url_da_midia(post["imagem"])}
+        tentativas = 24
+    conteiner = chamar("POST", f"{ig_id}/media", caption=post["legenda"], **params)["id"]
+    for _ in range(tentativas):
         estado = chamar("GET", conteiner, fields="status_code,status")
         codigo = estado.get("status_code")
         if codigo == "FINISHED":
@@ -76,7 +87,7 @@ def preparar(ig_id, post):
         if codigo in ("ERROR", "EXPIRED"):
             raise SystemExit(f"O Instagram recusou o post {post['id']}: {estado.get('status', codigo)}")
         time.sleep(5)
-    raise SystemExit(f"O Instagram demorou demais para processar a imagem do post {post['id']}.")
+    raise SystemExit(f"O Instagram demorou demais para processar a mídia do post {post['id']}.")
 
 
 def agora_iso():
@@ -102,10 +113,14 @@ def main():
         if not pendentes:
             print("Token OK. Nenhum post pendente na agenda.")
             return
-        post = pendentes[0]
-        preparar(ig_id, post)
-        print(f"Tudo certo: o Instagram aceitou a imagem e a legenda do próximo post "
-              f"({post['id']}, {post['quando']}). Nada foi publicado.")
+        # Testa o próximo post de imagem e todos os vídeos pendentes, sem publicar nada.
+        imagens = [p for p in pendentes if "video" not in p][:1]
+        videos = [p for p in pendentes if "video" in p]
+        for post in imagens + videos:
+            preparar(ig_id, post)
+            tipo = "o vídeo" if "video" in post else "a imagem"
+            print(f"Tudo certo: o Instagram aceitou {tipo} e a legenda do post {post['id']} ({post['quando']}).")
+        print("Nada foi publicado.")
         return
 
     if not carregar(CONFIG, {}).get("ligado"):

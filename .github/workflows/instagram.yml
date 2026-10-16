@@ -2,8 +2,8 @@ name: Publicar no Instagram
 
 on:
   schedule:
-    # A cada 20 minutos, das 11h às 20h59 no horário de Brasília (o GitHub usa UTC, 3 horas a mais).
-    - cron: "2,22,42 14-23 * * *"
+    # A cada 20 minutos, das 11h às 21h59 no horário de Brasília (o GitHub usa UTC, 3 horas a mais).
+    - cron: "2,22,42 0,14-23 * * *"
   workflow_dispatch:
     inputs:
       modo:
@@ -24,7 +24,7 @@ concurrency:
 jobs:
   publicar:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
 
