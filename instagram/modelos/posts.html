@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<script src="ilustracoes.js"></script>
+<style>
+:root {
+  --bg: #09080A; --card: rgba(255,255,255,.045); --line: rgba(255,255,255,.12); --line-2: rgba(255,255,255,.2);
+  --ink: #F6F2F2; --muted: #B5ABAD; --red: #FF4747; --gold: #FFC14D;
+  --display: "Sora", sans-serif; --body: "Hanken Grotesk", sans-serif; --mono: "Martian Mono", monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1350px; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); position: relative; overflow: hidden; -webkit-font-smoothing: antialiased; }
+.sky { position: absolute; inset: 0;
+  background: radial-gradient(760px 620px at 100% -6%, rgba(232,38,43,.30), transparent 62%),
+              radial-gradient(620px 520px at -10% 104%, rgba(232,38,43,.16), transparent 62%), var(--bg); }
+.sky::before { content: ""; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 60px 60px; -webkit-mask-image: radial-gradient(ellipse 90% 70% at 70% 0%, #000 15%, transparent 80%); }
+.frame { position: absolute; inset: 70px 80px 62px; display: flex; flex-direction: column; gap: 36px; }
+header { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.kicker { display: inline-flex; align-items: center; gap: 14px; font-family: var(--mono); font-size: 22px; letter-spacing: .16em; text-transform: uppercase; color: var(--red); }
+.kicker::before { content: ""; width: 26px; height: 2px; background: currentColor; }
+.tema { font-family: var(--mono); font-size: 19px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 8px 16px; border: 1px solid var(--line-2); border-radius: 999px; }
+main { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 36px; min-height: 0; }
+h1 { font-family: var(--display); font-weight: 700; font-size: var(--h1, 84px); line-height: 1.05; letter-spacing: -.04em; text-wrap: balance; }
+.r { background: linear-gradient(92deg, #FF3B3B, #FF7468 55%, #FFB4A8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.o { background: linear-gradient(92deg, #FFC14D, #FFE3A0 60%, #FFFFFF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { font-size: 40px; line-height: 1.35; color: var(--muted); text-wrap: balance; }
+.lead b { color: var(--ink); font-weight: 600; }
+.nota { font-size: 30px; line-height: 1.4; color: var(--muted); padding-left: 22px; border-left: 3px solid #E3262B; }
+
+.ilu { width: 100%; height: auto; stroke: #FF5A54; stroke-width: 5; filter: drop-shadow(0 0 16px rgba(255,71,71,.75)) drop-shadow(0 0 40px rgba(232,38,43,.45)); }
+.palco { position: relative; display: grid; place-items: center; padding: 10px 70px 0; }
+.palco::before { content: ""; position: absolute; width: 640px; height: 360px; border-radius: 50%; background: radial-gradient(closest-side, rgba(232,38,43,.28), transparent); }
+.palco .ilu { position: relative; max-width: 700px; }
+
+.opcoes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.opcao { display: grid; gap: 14px; justify-items: center; padding: 30px 18px 32px; border-radius: 28px; border: 1px solid var(--line); background: var(--card); }
+.opcao .ilu { stroke-width: 7; width: 230px; }
+.opcao span { font-family: var(--display); font-weight: 600; font-size: 40px; }
+
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.lado { padding: 34px 32px 36px; border-radius: 28px; border: 1px solid var(--line); background: var(--card); display: grid; gap: 14px; align-content: start; }
+.lado .tag, .lista .tag { justify-self: start; font-family: var(--mono); font-size: 19px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 6px 14px; border: 1px solid var(--line-2); border-radius: 999px; }
+.lado p { font-size: 34px; line-height: 1.35; }
+.lado.ruim p { color: var(--muted); }
+.lado.bom { border-color: rgba(232,38,43,.6); background: radial-gradient(120% 120% at 0% 0%, rgba(232,38,43,.22), transparent 60%), var(--card); }
+.lado.bom .tag { color: var(--red); border-color: rgba(232,38,43,.6); }
+
+.lista { display: grid; gap: 16px; }
+.item { display: flex; align-items: center; gap: 22px; padding: 26px 30px; border-radius: 24px; border: 1px solid var(--line); background: var(--card); font-size: 34px; font-weight: 600; }
+.item i { flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--red); background: rgba(232,38,43,.12); }
+.item i::after { content: ""; width: 20px; height: 11px; border-left: 4px solid var(--red); border-bottom: 4px solid var(--red); transform: translateY(-3px) rotate(-45deg); }
+
+.foto-cta { display: flex; align-items: center; gap: 36px; }
+.foto-cta img { width: 230px; height: 230px; border-radius: 50%; object-fit: cover; border: 6px solid var(--bg); box-shadow: 0 0 0 5px #E3262B, 0 0 80px -10px rgba(232,38,43,.9); }
+.url { align-self: flex-start; font-family: var(--mono); font-size: 38px; color: #fff; padding: 28px 34px; border-radius: 24px; background: linear-gradient(135deg, #E8292E, #A3141A); box-shadow: 0 40px 80px -40px rgba(232,38,43,.9); }
+
+footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 28px; border-top: 1px solid var(--line); }
+.quem { display: flex; align-items: center; gap: 18px; }
+.quem img { width: 74px; height: 74px; border-radius: 50%; object-fit: cover; border: 3px solid #E3262B; }
+.quem strong { display: block; font-family: var(--display); font-weight: 600; font-size: 28px; }
+.quem span { font-size: 21px; color: var(--muted); }
+.onde { text-align: right; font-family: var(--mono); font-size: 20px; line-height: 1.7; color: var(--muted); }
+.onde b { color: var(--ink); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="sky"></div>
+<div class="frame">
+  <header><span class="kicker">Seu sonho tem caminho</span><span class="tema" id="tema"></span></header>
+  <main id="main"></main>
+  <footer>
+    <div class="quem"><img src="avatar.jpg" alt=""><div><strong>Ivan Fuly</strong><span>Consultor de consórcios · Ademicon</span></div></div>
+    <div class="onde"><b>@ivan_fuly</b><br>ivanfulyconsorcios.com.br</div>
+  </footer>
+</div>
+<script>
+const palco = (nome) => `<div class="palco">${ilustracao(nome)}</div>`;
+const POSTS = [
+  { tema: "Casa própria", html: `${palco("chave")}
+    <h1>Imagina a chave da <span class="r">sua casa</span> na mão.</h1>
+    <p class="lead">Sem aluguel, sem dono batendo na porta. <b>Um lugar que é seu.</b></p>` },
+  { tema: "Me conta", html: `
+    <h1 style="--h1:96px">Qual é o <span class="r">seu sonho?</span></h1>
+    <div class="opcoes">
+      <div class="opcao">${ilustracao("casa")}<span>Casa</span></div>
+      <div class="opcao">${ilustracao("carro")}<span>Carro</span></div>
+      <div class="opcao">${ilustracao("moto")}<span>Moto</span></div>
+    </div>
+    <p class="lead">Comenta aqui embaixo. <b>Eu te mostro o caminho.</b></p>` },
+  { tema: "Carro novo", html: `${palco("carro")}
+    <h1 style="--h1:78px">Aquele carro que você <span class="r">para pra olhar</span> toda vez que passa.</h1>
+    <p class="lead">Ele pode sair da vitrine e ir pra sua garagem. <b>Com um plano.</b></p>` },
+  { tema: "O caminho", html: `
+    <h1 style="--h1:100px">Seu sonho cabe numa <span class="r">parcela sem juros.</span></h1>
+    <p class="lead">No consórcio, você escolhe a parcela que cabe no seu mês e conquista <b>sem pagar juros</b>.</p>
+    <p class="nota">Planejamento que respeita o seu bolso.</p>` },
+  { tema: "Moto nova", html: `${palco("moto")}
+    <h1 style="--h1:76px">A moto que você vê na loja e pensa: <span class="r">um dia vai ser minha.</span></h1>
+    <p class="lead"><b>Que tal começar esse plano hoje?</b></p>` },
+  { tema: "O caminho", html: `
+    <h1 style="--h1:92px">Você não precisa ter o dinheiro todo hoje. <span class="r">Precisa de um plano.</span></h1>
+    <p class="lead">O consórcio transforma o sonho em parcelas mensais, <b>sem juros e sem entrada obrigatória</b>.</p>` },
+  { tema: "Família", html: `${palco("casa")}
+    <h1>Seu filho correndo no <span class="r">quintal da sua casa.</span></h1>
+    <p class="lead">Tem sonho que é da família inteira. <b>E ele começa com o primeiro passo.</b></p>` },
+  { tema: "Pensa nisso", html: `
+    <h1 style="--h1:82px">Todo mês você já paga por um sonho. <span class="r">Só que é o de outra pessoa.</span></h1>
+    <div class="duo">
+      <div class="lado ruim"><span class="tag">Aluguel</span><p>O dinheiro vai embora todo mês.</p></div>
+      <div class="lado bom"><span class="tag">Consórcio</span><p>A parcela te leva até a sua casa.</p></div>
+    </div>` },
+  { tema: "Família", html: `${palco("carro")}
+    <h1>A primeira viagem com o <span class="r">carro novo.</span></h1>
+    <p class="lead">Família no banco de trás, estrada pela frente. <b>Esse momento pode ser seu.</b></p>` },
+  { tema: "Sem promessa milagrosa", html: `
+    <h1 style="--h1:88px">Seu sonho tem caminho. <span class="r">Não tem atalho mágico.</span></h1>
+    <div class="lista">
+      <div class="item"><i></i>Contemplação por sorteio ou por lance</div>
+      <div class="item"><i></i>Fiscalizado pelo Banco Central</div>
+      <div class="item"><i></i>Regras claras, todas no contrato</div>
+    </div>
+    <p class="nota">Desconfie de quem promete data. Eu te mostro o caminho real.</p>` },
+  { tema: "Investimento", html: `
+    <h1 style="--h1:86px">Sonho também é ver o seu <span class="o">dinheiro trabalhando por você.</span></h1>
+    <p class="lead">Depois de contemplado, você pode vender a carta e receber o que pagou, <b>mais o ágio da venda</b>.</p>
+    <p class="nota">O lucro só existe depois da contemplação, que não tem data garantida.</p>` },
+  { tema: "Bora?", html: `
+    <div class="foto-cta"><img src="avatar.jpg" alt=""><h1 style="--h1:80px">Me conta o <span class="r">seu sonho.</span></h1></div>
+    <p class="lead">Eu te mostro o caminho pra chegar lá. <b>Atendimento no Rio e online, sem compromisso.</b></p>
+    <div class="url">ivanfulyconsorcios.com.br</div>
+    <p class="nota">O link está na bio.</p>` },
+];
+window.render = (i) => {
+  const p = POSTS[i - 1];
+  document.getElementById("tema").textContent = p.tema;
+  document.getElementById("main").innerHTML = p.html;
+  return POSTS.length;
+};
+render(1);
+</script>
+</body>
+</html>
