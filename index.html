@@ -148,6 +148,14 @@ header, main, footer { position: relative; z-index: 1; }
 .brand { display: grid; gap: 3px; text-decoration: none; }
 .brand-name { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; line-height: 1; }
 .brand-sub { font-family: var(--mono); font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.top-acoes { display: flex; align-items: center; gap: 8px; }
+.btn-icone {
+  width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center; flex: none;
+  color: var(--ink); background: var(--glass); border: 1px solid var(--line-2); transition: border-color .15s ease, color .15s ease;
+}
+.btn-icone:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-icone svg { width: 20px; height: 20px; }
+.sobre-texto .insta { justify-self: start; }
 .nav { display: flex; gap: 24px; font-size: .93rem; font-weight: 500; color: var(--muted); }
 .nav a { text-decoration: none; transition: color .15s ease; }
 .nav a:hover { color: var(--ink); }
@@ -514,6 +522,11 @@ thead .col-cons { color: var(--cyan); }
   <symbol id="i-chat" viewBox="0 0 24 24">
     <path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.5L3 21l2-5.4A8.4 8.4 0 1 1 21 11.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
+  <symbol id="i-insta" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+  </symbol>
 </svg>
 
 <div class="sky" aria-hidden="true"></div>
@@ -532,7 +545,10 @@ thead .col-cons { color: var(--cyan); }
       <a href="#quiz">Teste</a>
       <a href="#duvidas">Dúvidas</a>
     </nav>
-    <a class="btn btn-wa btn-sm" data-wa="geral" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp</a>
+    <div class="top-acoes">
+      <a class="btn-icone" href="https://www.instagram.com/ivan_fuly/" target="_blank" rel="noopener" aria-label="Instagram do Ivan Fuly (@ivan_fuly)"><svg aria-hidden="true"><use href="#i-insta"/></svg></a>
+      <a class="btn btn-wa btn-sm" data-wa="geral" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp</a>
+    </div>
   </div>
 </header>
 
@@ -803,6 +819,7 @@ thead .col-cons { color: var(--cyan); }
         <h2>Prazer, eu sou o Ivan Fuly.</h2>
         <p>Sou consultor de consórcios na Ademicon e atendo no Rio de Janeiro, pessoalmente ou por vídeo. Meu trabalho é entender o que você quer conquistar e montar um plano que caiba no seu orçamento.</p>
         <p>Consórcio é um compromisso de alguns anos. Por isso eu explico cada regra antes de você assinar e continuo do seu lado depois, nas assembleias e na hora de dar lance.</p>
+        <a class="btn btn-ghost btn-sm insta" href="https://www.instagram.com/ivan_fuly/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-insta"/></svg>Me acompanhe no Instagram: @ivan_fuly</a>
       </div>
     </div>
     <ul class="compromissos">
@@ -880,7 +897,7 @@ thead .col-cons { color: var(--cyan); }
 </main>
 
 <footer class="wrap rodape">
-  <p><strong>Ivan Fuly</strong> · Consultor de consórcios · Ademicon · Rio de Janeiro, RJ</p>
+  <p><strong>Ivan Fuly</strong> · Consultor de consórcios · Ademicon · Rio de Janeiro, RJ · Instagram <a href="https://www.instagram.com/ivan_fuly/" target="_blank" rel="noopener">@ivan_fuly</a></p>
   <p>As condições do consórcio (taxa de administração, prazo, reajuste e regras de lance) dependem do grupo e são apresentadas na simulação personalizada. A contemplação acontece por sorteio ou lance, conforme o regulamento do grupo, e não tem data garantida. O resultado da venda de uma carta contemplada depende do valor da carta, do momento da contemplação e das condições de compra, e não é garantido.</p>
 </footer>
 
