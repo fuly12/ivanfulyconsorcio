@@ -1,0 +1,46 @@
+name: Publicar no Instagram
+
+on:
+  schedule:
+    # A cada 20 minutos, das 11h às 20h59 no horário de Brasília (o GitHub usa UTC, 3 horas a mais).
+    - cron: "2,22,42 14-23 * * *"
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "verificar = testa sem publicar; agenda = publica o que estiver no horário"
+        type: choice
+        options:
+          - verificar
+          - agenda
+        default: verificar
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publicar o post do horário
+        run: python3 instagram/publicar.py
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          MODO: ${{ github.event.inputs.modo || 'agenda' }}
+
+      - name: Guardar o registro do que foi publicado
+        if: always()
+        run: |
+          if git diff --quiet -- instagram/publicados.json; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add instagram/publicados.json
+          git commit -m "Registra post publicado no Instagram"
+          git pull --rebase --quiet origin main
+          git push origin HEAD:main
