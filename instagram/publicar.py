@@ -3,7 +3,7 @@
 
 Modos (variável MODO):
   agenda     publica o próximo post cujo horário já chegou (uso normal, pelo agendamento)
-  verificar  confere o token e testa o próximo post de imagem e os vídeos da agenda, sem publicar nada
+  verificar  confere o token e testa o próximo post da agenda, sem publicar nada
 """
 import json
 import os
@@ -116,13 +116,12 @@ def main():
         if not pendentes:
             print("Token OK. Nenhum post pendente na agenda.")
             return
-        # Testa o próximo post de imagem e todos os vídeos pendentes, sem publicar nada.
-        imagens = [p for p in pendentes if "video" not in p][:1]
-        videos = [p for p in pendentes if "video" in p]
-        for post in imagens + videos:
-            preparar(ig_id, post)
-            tipo = "o vídeo" if "video" in post else "a imagem"
-            print(f"Tudo certo: o Instagram aceitou {tipo} e a legenda do post {post['id']} ({post['quando']}).")
+        # Testa só o próximo post pendente, sem publicar nada. Mandar muitos arquivos de
+        # uma vez pro Instagram conferir pode parecer atividade suspeita pra Meta.
+        post = pendentes[0]
+        preparar(ig_id, post)
+        tipo = "o vídeo" if "video" in post else "a imagem"
+        print(f"Tudo certo: o Instagram aceitou {tipo} e a legenda do post {post['id']} ({post['quando']}).")
         print("Nada foi publicado.")
         return
 
