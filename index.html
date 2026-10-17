@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ivan Fuly Consórcios</title>
-<meta name="description" content="Consórcio de veículos, imóveis e investimento no Rio de Janeiro, sem juros. Fale com o Ivan Fuly, consultor de consórcios, e descubra o plano certo pra você.">
+<meta name="description" content="A casa própria, o carro novo, a moto que não sai da cabeça. Seu sonho tem caminho com consórcio, sem juros. Atendimento no Rio de Janeiro e online com o Ivan Fuly.">
 <link rel="canonical" href="https://ivanfulyconsorcios.com.br/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#09080A">
@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="Ivan Fuly Consórcios">
 <meta property="og:url" content="https://ivanfulyconsorcios.com.br/">
 <meta property="og:title" content="Ivan Fuly Consórcios">
-<meta property="og:description" content="Carro, casa ou investimento. Sem pagar juros. Consórcio com atendimento no Rio de Janeiro e online.">
+<meta property="og:description" content="A casa própria, o carro novo, a moto. Seu sonho tem caminho, sem pagar juros. Atendimento no Rio de Janeiro e online.">
 <meta property="og:image" content="https://ivanfulyconsorcios.com.br/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -288,6 +288,60 @@ header, main, footer { position: relative; z-index: 1; }
 .caminho > a { font-weight: 700; color: var(--cyan); text-decoration: none; }
 .caminho > a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .caminho--ouro > a { color: var(--gold); }
+.caminho .sonho { color: var(--ink); font-size: 1.02rem; }
+
+/* Desenhos em neon (os mesmos do Instagram) */
+.palco {
+  position: relative; display: grid; place-items: center; margin: -6px -6px 4px; padding: 10px 6px 0;
+}
+.palco::before {
+  content: ""; position: absolute; inset: 8% 6% 0; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(232, 38, 43, .26), transparent);
+}
+.caminho--ouro .palco::before { background: radial-gradient(closest-side, rgba(255, 193, 77, .2), transparent); }
+.ilu {
+  position: relative; width: 100%; max-width: 300px; height: auto; overflow: visible;
+  fill: none; stroke: #FF5A54; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 10px rgba(255, 71, 71, .7)) drop-shadow(0 0 26px rgba(232, 38, 43, .4));
+}
+.caminho--ouro .ilu { stroke: var(--gold); filter: drop-shadow(0 0 10px rgba(255, 193, 77, .65)) drop-shadow(0 0 26px rgba(255, 193, 77, .3)); }
+.js .ilu > * { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js .desenhado .ilu > * { animation: tracar 1.4s cubic-bezier(.6, .1, .3, 1) forwards; }
+.js .desenhado .ilu > :nth-child(2) { animation-delay: .15s; }
+.js .desenhado .ilu > :nth-child(3) { animation-delay: .3s; }
+.js .desenhado .ilu > :nth-child(4) { animation-delay: .45s; }
+.js .desenhado .ilu > :nth-child(5) { animation-delay: .6s; }
+.js .desenhado .ilu > :nth-child(6) { animation-delay: .75s; }
+.js .desenhado .ilu > :nth-child(n+7) { animation-delay: .9s; }
+@keyframes tracar { to { stroke-dashoffset: 0; } }
+
+/* A dor */
+.dores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.dor {
+  min-width: 0; display: grid; gap: 14px; align-content: start; padding: 24px;
+  border-radius: var(--radius); border: 1px solid var(--line); background: var(--glass);
+}
+.dor blockquote {
+  margin: 0; position: relative; padding-top: 30px;
+  font-family: var(--display); font-weight: 500; font-size: 1.12rem; line-height: 1.4; letter-spacing: -.01em; color: var(--ink);
+}
+.dor blockquote::before {
+  content: "“"; position: absolute; top: -10px; left: -2px;
+  font-family: var(--display); font-weight: 700; font-size: 3.4rem; line-height: 1; color: var(--cyan); text-shadow: 0 0 18px rgba(232, 38, 43, .7);
+}
+.dor p { color: var(--muted); font-size: .95rem; }
+.virada {
+  margin-top: 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center;
+  padding: clamp(24px, 3.4vw, 40px); border-radius: 26px;
+  border: 1px solid transparent;
+  background:
+    radial-gradient(90% 140% at 0% 0%, rgba(232, 38, 43, .22), transparent 60%) padding-box,
+    linear-gradient(180deg, #1B1517, #141114) padding-box,
+    linear-gradient(120deg, rgba(232, 38, 43, .85), rgba(255, 255, 255, .08) 55%, rgba(255, 193, 77, .55)) border-box;
+}
+.virada > div { display: grid; gap: 10px; max-width: 44rem; }
+.virada h3 { font-size: clamp(1.4rem, 2.8vw, 2.1rem); line-height: 1.12; letter-spacing: -.03em; font-weight: 700; }
+.virada p { color: var(--muted); }
 
 /* Segurança */
 .seguranca {
@@ -481,6 +535,8 @@ thead .col-cons { color: var(--cyan); }
 @media (max-width: 980px) {
   .nav { display: none; }
   .caminhos { grid-template-columns: minmax(0, 1fr); }
+  .dores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .palco .ilu { max-width: 260px; }
   .passos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .compromissos { grid-template-columns: minmax(0, 1fr); }
 }
@@ -498,9 +554,10 @@ thead .col-cons { color: var(--cyan); }
   .fluxo li .no { grid-row: span 2; }
 }
 @media (max-width: 760px) {
-  .lucro, .cta-final { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .lucro, .cta-final, .virada { grid-template-columns: minmax(0, 1fr); justify-items: start; }
 }
 @media (max-width: 560px) {
+  .dores { grid-template-columns: minmax(0, 1fr); }
   .sobre { grid-template-columns: minmax(0, 1fr); }
   .seg-lista, .reajuste { grid-template-columns: minmax(0, 1fr); }
   .passos { grid-template-columns: minmax(0, 1fr); }
@@ -513,6 +570,7 @@ thead .col-cons { color: var(--cyan); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .ilu > * { stroke-dashoffset: 0; }
 }
 </style>
 </head>
@@ -538,7 +596,7 @@ thead .col-cons { color: var(--cyan); }
       <span class="brand-sub">Consórcios · Ademicon</span>
     </a>
     <nav class="nav" aria-label="Seções">
-      <a href="#caminhos">Caminhos</a>
+      <a href="#caminhos">Seu sonho</a>
       <a href="#investir">Investir</a>
       <a href="#como">Como funciona</a>
       <a href="#parcela">Parcela</a>
@@ -555,12 +613,12 @@ thead .col-cons { color: var(--cyan); }
 <main id="inicio">
   <section class="wrap hero">
     <div class="hero-copy">
-      <p class="kicker">Consultor de consórcios · Rio de Janeiro</p>
-      <h1>Carro, casa ou investimento. <span class="grad">Sem pagar juros.</span></h1>
-      <p class="lede">Eu te ajudo a escolher o consórcio certo pro seu momento, com parcela que cabe no seu mês e cada regra explicada antes de você assinar.</p>
+      <p class="kicker">Seu sonho tem caminho</p>
+      <h1>Aquele sonho que você vive adiando <span class="grad">tem caminho.</span></h1>
+      <p class="lede">A chave da sua casa, o carro novo na garagem, a moto que não sai da sua cabeça. Eu te ajudo a transformar esse sonho num plano, com parcela que cabe no seu mês e sem pagar juros.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="#quiz">Descobrir meu plano</a>
-        <a class="btn btn-ghost" data-wa="geral" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>Falar no WhatsApp</a>
+        <a class="btn btn-primary" data-wa="sonho" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>Me conta o seu sonho</a>
+        <a class="btn btn-ghost" href="#quiz">Descobrir meu caminho</a>
       </div>
       <ul class="pills">
         <li>Sem juros</li>
@@ -573,9 +631,9 @@ thead .col-cons { color: var(--cyan); }
       <canvas id="orbita" aria-hidden="true"></canvas>
       <div class="carta-wrap">
         <div class="modos" aria-label="Tipo de consórcio">
-          <button type="button" data-modo="veiculo" aria-pressed="true">Veículo</button>
-          <button type="button" data-modo="imovel" aria-pressed="false">Imóvel</button>
-          <button type="button" data-modo="investir" aria-pressed="false">Investimento</button>
+          <button type="button" data-modo="imovel" aria-pressed="true">Casa</button>
+          <button type="button" data-modo="veiculo" aria-pressed="false">Carro e moto</button>
+          <button type="button" data-modo="investir" aria-pressed="false">Investir</button>
         </div>
         <div class="flutua">
           <div class="carta" id="carta">
@@ -585,8 +643,8 @@ thead .col-cons { color: var(--cyan); }
             </div>
             <div class="carta-meio" id="cartaMeio">
               <span class="status">Contemplada</span>
-              <strong class="carta-titulo" id="cartaTitulo">Seu carro novo</strong>
-              <span class="carta-sub" id="cartaSub">Carro zero ou seminovo, moto e pesados</span>
+              <strong class="carta-titulo" id="cartaTitulo">A chave da sua casa</strong>
+              <span class="carta-sub" id="cartaSub">Sem aluguel, num lugar que é seu</span>
             </div>
             <div class="carta-base">
               <span>Ivan Fuly · Consórcios</span>
@@ -605,39 +663,112 @@ thead .col-cons { color: var(--cyan); }
     </div>
   </div>
 
+  <section class="wrap sec" id="dor">
+    <div class="sec-head">
+      <p class="kicker">A vida real</p>
+      <h2>Você se reconhece em alguma dessas?</h2>
+    </div>
+    <div class="dores">
+      <article class="dor">
+        <blockquote>Todo mês o aluguel sai da conta e nada fica pra mim.</blockquote>
+        <p>Anos pagando por uma casa que nunca vai ser sua.</p>
+      </article>
+      <article class="dor">
+        <blockquote>Eu passo na frente da concessionária e penso: um dia…</blockquote>
+        <p>E esse dia vai ficando cada vez mais longe.</p>
+      </article>
+      <article class="dor">
+        <blockquote>Fui ver o financiamento e desisti quando vi os juros.</blockquote>
+        <p>No fim, você paga muito mais do que o bem vale.</p>
+      </article>
+      <article class="dor">
+        <blockquote>Meu sonho sempre fica pro ano que vem.</blockquote>
+        <p>De novo. E o ano que vem nunca chega.</p>
+      </article>
+    </div>
+    <div class="virada">
+      <div>
+        <h3>Não é falta de vontade. <span class="grad">É falta de um plano.</span></h3>
+        <p>O consórcio é esse plano: você escolhe a parcela que cabe no seu mês, paga sem juros e compra à vista quando for contemplado. Sem promessa milagrosa, com o pé no chão.</p>
+      </div>
+      <a class="btn btn-primary" data-wa="plano" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>Quero montar o meu plano</a>
+    </div>
+  </section>
+
   <section class="wrap sec" id="caminhos">
     <div class="sec-head">
-      <p class="kicker">Três caminhos</p>
-      <h2>O que você quer conquistar?</h2>
+      <p class="kicker">Escolha o seu sonho</p>
+      <h2>Qual é o seu sonho?</h2>
+      <p class="lede">Cada sonho tem o seu caminho. Me diz qual é o seu que eu te mostro como chegar lá.</p>
     </div>
     <div class="caminhos">
       <article class="caminho">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17v-4l2.2-5.2A2 2 0 0 1 7 6.5h10a2 2 0 0 1 1.8 1.3L21 13v4"/><path d="M3 13h18"/><path d="M3 17h2.5M9.5 17h5M18.5 17H21"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg></span>
-        <p class="kicker">Consórcio de veículos</p>
-        <h3>Seu próximo carro, comprado à vista</h3>
-        <ul class="lista">
-          <li>Carro zero ou seminovo, moto e veículos pesados, conforme o plano.</li>
-          <li>Com a carta de crédito na mão, você paga à vista e tem força pra negociar desconto.</li>
-          <li>Bom pra trocar de carro, pra quem trabalha com aplicativo e pra frota de empresa.</li>
-        </ul>
-        <a data-wa="veiculo" href="#contato">Quero uma simulação de veículo →</a>
-      </article>
-      <article class="caminho">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></svg></span>
+        <div class="palco" aria-hidden="true">
+          <svg class="ilu" viewBox="0 0 400 300">
+            <path pathLength="1" d="M40 152 L200 38 L360 152"/>
+            <path pathLength="1" d="M78 126 L78 268 L322 268 L322 126"/>
+            <path pathLength="1" d="M176 268 L176 196 L224 196 L224 268"/>
+            <path pathLength="1" d="M108 172 H152 V214 H108 Z"/>
+            <path pathLength="1" d="M248 172 H292 V214 H248 Z"/>
+            <path pathLength="1" d="M130 172 V214 M108 193 H152 M270 172 V214 M248 193 H292"/>
+            <path pathLength="1" d="M268 88 L268 56 L298 56 L298 109"/>
+            <circle pathLength="1" cx="214" cy="234" r="3.5"/>
+            <path pathLength="1" d="M18 268 H382"/>
+          </svg>
+        </div>
         <p class="kicker">Consórcio imobiliário</p>
-        <h3>Sua casa própria, sem pagar juros</h3>
+        <h3>A chave da sua casa na mão</h3>
+        <p class="sonho">Sem aluguel, sem dono batendo na porta. Um lugar que é seu, do seu jeito, pra sua família crescer.</p>
         <ul class="lista">
           <li>Casa, apartamento, terreno, imóvel comercial ou construção, conforme o plano.</li>
           <li>Dá pra usar o FGTS, seguindo as regras do fundo.</li>
           <li>Também serve pra comprar um imóvel e ter renda com aluguel.</li>
         </ul>
-        <a data-wa="imovel" href="#contato">Quero uma simulação de imóvel →</a>
+        <a data-wa="imovel" href="#contato">Quero a minha casa →</a>
+      </article>
+      <article class="caminho">
+        <div class="palco" aria-hidden="true">
+          <svg class="ilu" viewBox="0 0 400 300">
+            <path pathLength="1" d="M40 206 L40 172 Q42 156 62 151 L112 140 L152 106 Q162 98 178 98 L264 98 Q280 98 292 108 L330 140 L354 146 Q370 150 370 168 L370 206"/>
+            <path pathLength="1" d="M40 206 H78 M142 206 H268 M332 206 H370"/>
+            <circle pathLength="1" cx="110" cy="206" r="31"/>
+            <circle pathLength="1" cx="300" cy="206" r="31"/>
+            <path pathLength="1" d="M164 140 L184 113 L244 113 L244 140 Z"/>
+            <path pathLength="1" d="M256 140 L256 113 L276 113 L302 140 Z"/>
+            <circle pathLength="1" cx="110" cy="206" r="9"/>
+            <circle pathLength="1" cx="300" cy="206" r="9"/>
+            <path pathLength="1" d="M250 148 V196 M350 160 H364"/>
+            <path pathLength="1" d="M18 250 H382"/>
+          </svg>
+        </div>
+        <p class="kicker">Carro ou moto</p>
+        <h3>O carro novo na sua garagem</h3>
+        <p class="sonho">A família no banco de trás e a estrada pela frente. Ou aquela moto que você olha na loja e pensa: um dia vai ser minha.</p>
+        <ul class="lista">
+          <li>Carro zero ou seminovo, moto e veículos pesados, conforme o plano.</li>
+          <li>Com a carta de crédito na mão, você paga à vista e tem força pra negociar desconto.</li>
+          <li>Bom pra trocar de carro, pra quem trabalha com aplicativo e pra frota de empresa.</li>
+        </ul>
+        <a data-wa="veiculo" href="#contato">Quero o meu carro ou moto →</a>
       </article>
       <article class="caminho caminho--ouro">
         <span class="selo">Pra investir</span>
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>
+        <div class="palco" aria-hidden="true">
+          <svg class="ilu" viewBox="0 0 400 300">
+            <path pathLength="1" d="M70 222 A40 12 0 0 1 150 222 A40 12 0 0 1 70 222 Z"/>
+            <path pathLength="1" d="M70 222 V250 A40 12 0 0 0 150 250 V222 M70 236 A40 12 0 0 0 150 236"/>
+            <path pathLength="1" d="M180 176 A40 12 0 0 1 260 176 A40 12 0 0 1 180 176 Z"/>
+            <path pathLength="1" d="M180 176 V250 A40 12 0 0 0 260 250 V176 M180 194 A40 12 0 0 0 260 194 M180 212 A40 12 0 0 0 260 212 M180 230 A40 12 0 0 0 260 230"/>
+            <path pathLength="1" d="M56 168 L132 120 L196 138 L330 54"/>
+            <path pathLength="1" d="M292 50 H334 V92"/>
+            <path pathLength="1" d="M290 146 A40 12 0 0 1 370 146 A40 12 0 0 1 290 146 Z"/>
+            <path pathLength="1" d="M290 146 V250 A40 12 0 0 0 370 250 V146 M290 172 A40 12 0 0 0 370 172 M290 198 A40 12 0 0 0 370 198 M290 224 A40 12 0 0 0 370 224"/>
+            <path pathLength="1" d="M18 266 H382"/>
+          </svg>
+        </div>
         <p class="kicker">Consórcio como investimento</p>
-        <h3>Seja contemplado e venda sua carta com lucro</h3>
+        <h3>Seu dinheiro trabalhando por você</h3>
+        <p class="sonho">Pra quem sonha com o futuro: ser contemplado e vender a carta com lucro.</p>
         <ul class="lista">
           <li>Depois de contemplado, você pode vender a sua carta de crédito pra própria empresa.</li>
           <li>Você recebe de volta o que pagou e mais um valor extra, que é o seu lucro.</li>
@@ -676,29 +807,29 @@ thead .col-cons { color: var(--cyan); }
 
   <section class="wrap sec" id="como">
     <div class="sec-head">
-      <p class="kicker">Passo a passo</p>
-      <h2>Como funciona o consórcio</h2>
+      <p class="kicker">Do sonho à chave na mão</p>
+      <h2>Como o seu sonho sai do papel</h2>
     </div>
     <ol class="passos">
       <li class="passo">
         <span class="passo-n" aria-hidden="true">1</span>
-        <h3>Escolha sua carta de crédito</h3>
-        <p>É o valor que você vai ter pra comprar. A gente define junto, a partir da parcela que cabe no seu mês.</p>
+        <h3>Você me conta o seu sonho</h3>
+        <p>A casa, o carro, a moto. A gente define junto o valor da carta de crédito, a partir da parcela que cabe no seu mês.</p>
       </li>
       <li class="passo">
         <span class="passo-n" aria-hidden="true">2</span>
-        <h3>Pague parcelas sem juros</h3>
+        <h3>Parcelas sem juros</h3>
         <p>Você entra num grupo e paga uma parcela por mês. Em vez de juros, tem a taxa de administração, diluída no plano.</p>
       </li>
       <li class="passo">
         <span class="passo-n" aria-hidden="true">3</span>
-        <h3>Seja contemplado</h3>
-        <p>Todo mês tem assembleia. Nela, participantes do grupo são contemplados por sorteio e por lance.</p>
+        <h3>O dia da contemplação</h3>
+        <p>Todo mês tem assembleia, com contemplação por sorteio e por lance. Eu te ajudo com a estratégia de lance, sem prometer data.</p>
       </li>
       <li class="passo">
         <span class="passo-n" aria-hidden="true">4</span>
-        <h3>Use ou venda a carta</h3>
-        <p>Compre seu carro ou imóvel à vista ou, se o seu objetivo é investir, venda a carta contemplada.</p>
+        <h3>O sonho na sua mão</h3>
+        <p>Com a carta contemplada, você compra seu carro ou imóvel à vista. Ou, se o objetivo é investir, vende a carta.</p>
       </li>
     </ol>
   </section>
@@ -794,8 +925,8 @@ thead .col-cons { color: var(--cyan); }
   <section class="wrap sec" id="quiz">
     <div class="sec-head">
       <p class="kicker">Teste rápido</p>
-      <h2>Qual consórcio combina com você?</h2>
-      <p class="lede">Quatro perguntas. No final você me manda as respostas pelo WhatsApp e eu preparo uma simulação pra você.</p>
+      <h2>Qual caminho leva ao seu sonho?</h2>
+      <p class="lede">Quatro perguntas. No final você me manda as respostas pelo WhatsApp e eu preparo uma simulação pro seu sonho.</p>
     </div>
     <div class="quiz">
       <form class="perguntas" id="perguntas"></form>
@@ -817,8 +948,8 @@ thead .col-cons { color: var(--cyan); }
       <div class="sobre-texto">
         <p class="kicker">Quem vai te atender</p>
         <h2>Prazer, eu sou o Ivan Fuly.</h2>
-        <p>Sou consultor de consórcios na Ademicon e atendo no Rio de Janeiro, pessoalmente ou por vídeo. Meu trabalho é entender o que você quer conquistar e montar um plano que caiba no seu orçamento.</p>
-        <p>Consórcio é um compromisso de alguns anos. Por isso eu explico cada regra antes de você assinar e continuo do seu lado depois, nas assembleias e na hora de dar lance.</p>
+        <p>Sou consultor de consórcios na Ademicon e atendo no Rio de Janeiro, pessoalmente ou por vídeo. Meu trabalho começa com uma pergunta: qual é o seu sonho? A partir dela, eu monto com você um plano que caiba no seu orçamento.</p>
+        <p>Sonho é coisa séria, e consórcio é um compromisso de alguns anos. Por isso eu explico cada regra antes de você assinar e continuo do seu lado depois, nas assembleias, na hora de dar lance e no dia de pegar a chave.</p>
         <a class="btn btn-ghost btn-sm insta" href="https://www.instagram.com/ivan_fuly/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-insta"/></svg>Me acompanhe no Instagram: @ivan_fuly</a>
       </div>
     </div>
@@ -887,11 +1018,11 @@ thead .col-cons { color: var(--cyan); }
     <div class="cta-final">
       <svg class="ondas" aria-hidden="true"></svg>
       <div class="cta-texto">
-        <h2>Vamos conversar <span class="grad">20 minutos?</span></h2>
-        <p>Online ou presencial no Rio, sem compromisso. Você sai da conversa sabendo quanto pagaria por mês e qual caminho faz mais sentido pra você.</p>
+        <h2>Qual sonho você quer <span class="grad">tirar do papel?</span></h2>
+        <p>Me conta numa conversa de 20 minutos, online ou presencial no Rio, sem compromisso. Você sai sabendo quanto pagaria por mês e qual caminho leva ao seu sonho.</p>
         <p class="numero" id="numeroTxt" hidden></p>
       </div>
-      <a class="btn btn-primary" data-wa="geral" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>Chamar no WhatsApp</a>
+      <a class="btn btn-primary" data-wa="sonho" href="#contato"><svg aria-hidden="true"><use href="#i-chat"/></svg>Me conta o seu sonho</a>
     </div>
   </section>
 </main>
@@ -911,14 +1042,25 @@ const WHATSAPP_NUMBER = "5521987776240";
 const $ = (id) => document.getElementById(id);
 const reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/* ---------- Desenhos dos sonhos: se desenham quando aparecem na tela ---------- */
+document.documentElement.classList.add("js");
+const observarDesenhos = new IntersectionObserver((entradas) => {
+  entradas.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("desenhado");
+    observarDesenhos.unobserve(e.target);
+  });
+}, { threshold: 0.35 });
+document.querySelectorAll(".caminho").forEach((c) => observarDesenhos.observe(c));
+
 /* ---------- Carta do topo ---------- */
 const MODOS = {
-  veiculo: { titulo: "Seu carro novo", sub: "Carro zero ou seminovo, moto e pesados" },
-  imovel: { titulo: "Sua casa própria", sub: "Casa, apê, terreno ou construção" },
-  investir: { titulo: "Seu lucro", sub: "Venda da carta contemplada" },
+  imovel: { titulo: "A chave da sua casa", sub: "Sem aluguel, num lugar que é seu" },
+  veiculo: { titulo: "Seu carro novo", sub: "A família no banco de trás, a estrada pela frente" },
+  investir: { titulo: "Seu dinheiro rendendo", sub: "Venda da carta contemplada" },
 };
-const ORDEM = ["veiculo", "imovel", "investir"];
-let modoAtual = "veiculo";
+const ORDEM = ["imovel", "veiculo", "investir"];
+let modoAtual = "imovel";
 const carta = $("carta");
 
 function setModo(modo) {
@@ -1063,7 +1205,7 @@ const orbita = (() => {
 
 /* ---------- Teste rápido ---------- */
 const QUIZ = [
-  { id: "objetivo", curto: "Objetivo", q: "O que você quer conquistar?", opts: [["carro", "Carro ou moto"], ["imovel", "Casa ou apartamento"], ["investir", "Investir e lucrar"], ["naosei", "Ainda estou decidindo"]] },
+  { id: "objetivo", curto: "Sonho", q: "Qual é o seu sonho?", opts: [["carro", "Carro ou moto"], ["imovel", "Casa ou apartamento"], ["investir", "Investir e lucrar"], ["naosei", "Ainda estou decidindo"]] },
   { id: "quando", curto: "Quando", q: "Quando você gostaria de ser contemplado?", opts: [["logo", "Nos próximos 6 meses"], ["medio", "Em 1 a 2 anos"], ["semPressa", "Sem pressa, quero planejar"]] },
   { id: "parcela", curto: "Parcela", q: "Quanto cabe de parcela no seu mês?", opts: [["ate500", "Até R$ 500"], ["ate1000", "R$ 500 a R$ 1.000"], ["ate2500", "R$ 1.000 a R$ 2.500"], ["mais", "Mais de R$ 2.500"]] },
   { id: "reserva", curto: "Reserva", q: "Você tem algum valor guardado ou FGTS?", opts: [["guardado", "Tenho um valor guardado"], ["fgts", "Tenho FGTS"], ["ambos", "Tenho os dois"], ["nada", "Ainda não"]] },
@@ -1142,8 +1284,10 @@ $("perguntas").addEventListener("change", (e) => {
 /* ---------- WhatsApp ---------- */
 const MENSAGENS = {
   geral: () => "Olá, Ivan! Vi seu site e quero saber mais sobre consórcio.",
-  veiculo: () => "Olá, Ivan! Quero uma simulação de consórcio de veículo.",
-  imovel: () => "Olá, Ivan! Quero uma simulação de consórcio imobiliário.",
+  sonho: () => "Olá, Ivan! Vi seu site e quero te contar o meu sonho.",
+  plano: () => "Olá, Ivan! Vi seu site e quero montar um plano pro meu sonho.",
+  veiculo: () => "Olá, Ivan! Meu sonho é um carro (ou moto) novo. Quero uma simulação de consórcio de veículo.",
+  imovel: () => "Olá, Ivan! Meu sonho é a casa própria. Quero uma simulação de consórcio imobiliário.",
   investir: () => "Olá, Ivan! Quero entender o consórcio como investimento e ver exemplos de lucro com a venda da carta.",
   quiz: () => ["Olá, Ivan! Fiz o teste no seu site:", ...QUIZ.map((q) => `• ${q.curto}: ${rotulo(q.id)}`), "Quero uma simulação."].join("\n"),
 };
