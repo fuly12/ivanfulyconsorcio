@@ -82,5 +82,11 @@
   "2026-s02-v7": {
     "status": "agendado manualmente no Instagram",
     "em": "2026-10-17"
+  },
+  "2026-teste-01": {
+    "status": "publicado",
+    "media_id": "18138796300629419",
+    "em": "2026-10-17T20:39:17+00:00",
+    "link": "https://www.instagram.com/p/Dem_HR4gXoE/"
   }
 }
