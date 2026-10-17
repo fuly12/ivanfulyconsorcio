@@ -100,6 +100,9 @@ def main():
     if not TOKEN:
         raise SystemExit("Falta o segredo IG_ACCESS_TOKEN no GitHub (Settings > Secrets and variables > Actions).")
     modo = os.environ.get("MODO", "agenda").strip() or "agenda"
+    if modo != "verificar" and not carregar(CONFIG, {}).get("ligado"):
+        print("A publicação automática está desligada (instagram/config.json). Nada foi publicado.")
+        return
 
     agenda = carregar(AGENDA, [])
     registro = carregar(REGISTRO, {})
@@ -121,10 +124,6 @@ def main():
             tipo = "o vídeo" if "video" in post else "a imagem"
             print(f"Tudo certo: o Instagram aceitou {tipo} e a legenda do post {post['id']} ({post['quando']}).")
         print("Nada foi publicado.")
-        return
-
-    if not carregar(CONFIG, {}).get("ligado"):
-        print("A publicação automática está desligada (instagram/config.json). Nada foi publicado.")
         return
 
     agora = datetime.now(timezone.utc)
