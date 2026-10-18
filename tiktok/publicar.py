@@ -5,7 +5,8 @@ Modos (variável MODO):
   conectar   sem CODIGO, mostra o link para autorizar o app no TikTok; com CODIGO,
              troca o código pelas chaves de acesso e guarda tudo criptografado
   verificar  confere a conexão e o próximo post da agenda, sem publicar nada
-  teste      publica um post da agenda (variável POST, padrão 2026-teste-01) como privado ("Só eu")
+  teste      publica um post da agenda (variável POST, padrão 2026-teste-01) como privado ("Só eu");
+             com ENVIO=rascunho, manda pra caixa de entrada do app em vez de publicar
   agenda     publica o próximo post cujo horário já chegou (uso normal, pelo agendamento)
 
 Um post da agenda com "tiktok": false fica só no Instagram, e "legenda_tiktok" troca a legenda.
@@ -370,6 +371,8 @@ def main():
                        key=lambda p: p["quando"])
 
     if modo == "teste":
+        if os.environ.get("ENVIO", "").strip() == "rascunho":
+            cfg["modo"] = "rascunho"
         alvo = os.environ.get("POST", "").strip() or POST_TESTE
         post = next((p for p in agenda if p["id"] == alvo), None)
         if not post:

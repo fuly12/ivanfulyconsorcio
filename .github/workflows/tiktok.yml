@@ -23,6 +23,13 @@ on:
         description: "Só no modo teste: o id do post da agenda (vazio = 2026-teste-01)"
         required: false
         default: ""
+      envio:
+        description: "Só no modo teste: direto = publica como privado; rascunho = manda pra caixa de entrada do TikTok"
+        type: choice
+        options:
+          - direto
+          - rascunho
+        default: direto
 
 permissions:
   contents: write
@@ -46,6 +53,7 @@ jobs:
           MODO: ${{ github.event.inputs.modo || 'agenda' }}
           CODIGO: ${{ github.event.inputs.codigo }}
           POST: ${{ github.event.inputs.post }}
+          ENVIO: ${{ github.event.inputs.envio }}
 
       - name: Guardar a conexão e o registro do que foi publicado
         if: always()
