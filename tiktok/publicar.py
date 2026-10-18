@@ -13,6 +13,7 @@ Um post da agenda com "tiktok": false fica só no Instagram, e "legenda_tiktok" 
 """
 import json
 import os
+import re
 import secrets
 import subprocess
 import time
@@ -229,6 +230,11 @@ def cortar(texto, limite):
     return texto.rstrip()
 
 
+def legenda_tiktok(post):
+    """A legenda do Instagram, sem a hashtag #reels, que não faz sentido no TikTok."""
+    return post.get("legenda_tiktok") or re.sub(r"[ \t]*#reels\b", "", post["legenda"], flags=re.I).strip()
+
+
 def dividir_legenda(legenda):
     """Foto no TikTok tem título (até 90) e descrição (até 4000): a primeira linha vira o título."""
     primeira, _, resto = legenda.strip().partition("\n")
@@ -270,7 +276,7 @@ def enviar_video(caminho, url, tamanho, pedaco, partes):
 def iniciar(post, criador, privacidade, cfg):
     """Manda o post pro TikTok e devolve o publish_id. No modo rascunho, vai pra caixa de entrada do app."""
     rascunho = cfg.get("modo") == "rascunho"
-    legenda = post.get("legenda_tiktok", post["legenda"])
+    legenda = legenda_tiktok(post)
     opcoes = {
         "privacy_level": privacidade,
         "disable_comment": bool(criador.get("comment_disabled")),

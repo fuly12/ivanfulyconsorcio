@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Legendas dos posts · Ivan Fuly Consórcios</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../legal.css">
+<style>
+  .dia { margin: 30px 0 10px; font-family: "Sora", sans-serif; font-size: 1.15rem; }
+  .post { display: grid; gap: 12px; padding: 16px; margin-bottom: 14px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .04); }
+  .post.passou { opacity: .55; }
+  .topo { display: flex; gap: 10px; align-items: center; color: #AFA4A6; font-size: .9rem; font-weight: 600; }
+  .topo .tipo { padding: 2px 10px; border-radius: 999px; background: rgba(232, 38, 43, .18); color: #FF8A80; }
+  .midia { width: 100%; max-height: 340px; object-fit: contain; border-radius: 12px; background: #000; }
+  .texto { white-space: pre-wrap; color: #CFC6C8; font-size: .95rem; max-height: 7.5em; overflow: hidden; position: relative; }
+  .texto:not(.aberto) { -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
+  .texto.aberto { max-height: none; }
+  .acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+  .acoes button { min-height: 46px; padding: 10px 20px; border-radius: 999px; font: 700 1rem "Hanken Grotesk", sans-serif; cursor: pointer; }
+  .copiar { border: 0; color: #fff; background: linear-gradient(135deg, #E3262B, #FF5A4E); }
+  .copiar.ok { background: #1E9E5A; }
+  .mais { border: 1px solid rgba(255, 255, 255, .25); color: #F6F2F2; background: transparent; }
+  #anteriores { margin-top: 24px; }
+</style>
+</head>
+<body>
+<main class="legal">
+  <a class="voltar" href="../">← Voltar para o site</a>
+  <h1>Legendas dos posts</h1>
+  <p>Os posts da agenda, do mais próximo pro mais distante. Quando o vídeo chegar no TikTok, toque em <b>Copiar legenda</b> e cole na descrição.</p>
+  <div id="lista"><p>Carregando…</p></div>
+  <div class="acoes"><button type="button" class="mais" id="anteriores" hidden>Ver posts anteriores</button></div>
+</main>
+<script>
+const FUSO = "America/Sao_Paulo";
+const diaDe = d => d.toLocaleDateString("en-CA", { timeZone: FUSO });
+const hoje = diaDe(new Date());
+const amanha = diaDe(new Date(Date.now() + 864e5));
+
+// No TikTok a hashtag #reels não faz sentido.
+const legendaTikTok = p => (p.legenda_tiktok || p.legenda).replace(/[ \t]*#reels\b/gi, "").trim();
+
+function nomeDoDia(dia) {
+  if (dia === hoje) return "Hoje";
+  if (dia === amanha) return "Amanhã";
+  const [a, m, d] = dia.split("-").map(Number);
+  const texto = new Date(Date.UTC(a, m - 1, d, 12)).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+async function copiar(texto) {
+  try {
+    await navigator.clipboard.writeText(texto);
+    return true;
+  } catch (e) {
+    const area = document.createElement("textarea");
+    area.value = texto;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+    return ok;
+  }
+}
+
+function cartao(p) {
+  const quando = new Date(p.quando);
+  const el = document.createElement("article");
+  el.className = "post" + (quando < new Date() ? " passou" : "");
+
+  const topo = document.createElement("div");
+  topo.className = "topo";
+  const tipo = document.createElement("span");
+  tipo.className = "tipo";
+  tipo.textContent = p.video ? "Vídeo" : "Foto";
+  const hora = document.createElement("span");
+  hora.textContent = quando.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: FUSO });
+  topo.append(tipo, hora);
+
+  let midia;
+  if (p.video) {
+    midia = document.createElement("video");
+    midia.src = "../" + p.video + "#t=" + ((p.capa_ms || 0) / 1000);
+    midia.preload = "metadata";
+    midia.controls = true;
+    midia.muted = true;
+    midia.playsInline = true;
+  } else {
+    midia = document.createElement("img");
+    midia.src = "../" + p.imagem;
+    midia.alt = "";
+    midia.loading = "lazy";
+  }
+  midia.className = "midia";
+
+  const texto = document.createElement("div");
+  texto.className = "texto";
+  texto.textContent = legendaTikTok(p);
+
+  const acoes = document.createElement("div");
+  acoes.className = "acoes";
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "copiar";
+  botao.textContent = "Copiar legenda";
+  botao.addEventListener("click", async () => {
+    const ok = await copiar(legendaTikTok(p));
+    botao.textContent = ok ? "Copiada!" : "Não deu, segure o texto pra copiar";
+    botao.classList.toggle("ok", ok);
+    setTimeout(() => { botao.textContent = "Copiar legenda"; botao.classList.remove("ok"); }, 2500);
+  });
+  const ver = document.createElement("button");
+  ver.type = "button";
+  ver.className = "mais";
+  ver.textContent = "Ver tudo";
+  ver.addEventListener("click", () => {
+    const aberto = texto.classList.toggle("aberto");
+    ver.textContent = aberto ? "Ver menos" : "Ver tudo";
+  });
+  acoes.append(botao, ver);
+
+  el.append(topo, midia, texto, acoes);
+  return el;
+}
+
+function mostrar(lista, posts) {
+  let diaAtual = "";
+  for (const p of posts) {
+    const dia = diaDe(new Date(p.quando));
+    if (dia !== diaAtual) {
+      diaAtual = dia;
+      const titulo = document.createElement("h2");
+      titulo.className = "dia";
+      titulo.textContent = nomeDoDia(dia);
+      lista.append(titulo);
+    }
+    lista.append(cartao(p));
+  }
+}
+
+fetch("../instagram/agenda.json", { cache: "no-store" })
+  .then(r => r.json())
+  .then(agenda => {
+    const posts = agenda.filter(p => p.tiktok !== false).sort((a, b) => a.quando.localeCompare(b.quando));
+    const proximos = posts.filter(p => diaDe(new Date(p.quando)) >= hoje);
+    const antigos = posts.filter(p => diaDe(new Date(p.quando)) < hoje).reverse();
+    const lista = document.getElementById("lista");
+    lista.textContent = "";
+    if (proximos.length) mostrar(lista, proximos);
+    else lista.innerHTML = "<p>Nenhum post agendado daqui pra frente.</p>";
+    const botao = document.getElementById("anteriores");
+    if (antigos.length) {
+      botao.hidden = false;
+      botao.addEventListener("click", () => {
+        const titulo = document.createElement("h2");
+        titulo.textContent = "Posts anteriores";
+        lista.append(titulo);
+        mostrar(lista, antigos);
+        botao.hidden = true;
+      });
+    }
+  })
+  .catch(() => { document.getElementById("lista").innerHTML = "<p>Não consegui carregar a agenda. Tente de novo daqui a pouco.</p>"; });
+</script>
+</body>
+</html>
