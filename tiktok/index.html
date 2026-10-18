@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Conexão com o TikTok · Ivan Fuly Consórcios</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../legal.css">
+</head>
+<body>
+<main class="legal">
+  <a class="voltar" href="../">← Voltar para o site</a>
+  <h1>Conexão com o TikTok</h1>
+  <p id="msg">Esta página recebe a autorização do TikTok para o aplicativo Ivan Fuly Posts.</p>
+  <div id="caixa" class="codigo" hidden>
+    <p>Código de autorização:</p>
+    <code id="codigo"></code>
+    <button type="button" id="copiar">Copiar código</button>
+    <p class="fino">O código vale por poucos minutos e só funciona uma vez.</p>
+  </div>
+</main>
+<script>
+const q = new URLSearchParams(location.search);
+const msg = document.getElementById("msg");
+if (q.get("error")) {
+  msg.textContent = "O TikTok não autorizou a conexão: " + (q.get("error_description") || q.get("error"));
+} else if (q.get("code")) {
+  msg.textContent = "Pronto! O TikTok autorizou a conexão. Agora copie o código abaixo e cole no GitHub, no passo \"Conectar TikTok\".";
+  document.getElementById("codigo").textContent = q.get("code");
+  document.getElementById("caixa").hidden = false;
+  document.getElementById("copiar").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(q.get("code")); document.getElementById("copiar").textContent = "Copiado!"; } catch (e) {}
+  });
+}
+</script>
+</body>
+</html>
