@@ -1,0 +1,63 @@
+name: Publicar no TikTok
+
+on:
+  schedule:
+    # Mesmos horários do Instagram, 5 minutos depois (o GitHub usa UTC, 3 horas a mais que Brasília).
+    - cron: "7,27,47 0,14-23 * * *"
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "conectar = liga a conta do TikTok; verificar = testa sem publicar; teste = publica um post como privado; agenda = publica o que estiver no horário"
+        type: choice
+        options:
+          - verificar
+          - conectar
+          - teste
+          - agenda
+        default: verificar
+      codigo:
+        description: "Só no modo conectar: o código que o site mostrou depois de autorizar (vazio = mostra o link)"
+        required: false
+        default: ""
+      post:
+        description: "Só no modo teste: o id do post da agenda (vazio = 2026-teste-01)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tiktok
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Publicar no TikTok
+        run: python3 tiktok/publicar.py
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          MODO: ${{ github.event.inputs.modo || 'agenda' }}
+          CODIGO: ${{ github.event.inputs.codigo }}
+          POST: ${{ github.event.inputs.post }}
+
+      - name: Guardar a conexão e o registro do que foi publicado
+        if: always()
+        run: |
+          if [ -z "$(git status --porcelain -- tiktok/publicados.json tiktok/conexao.enc)" ]; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- tiktok/
+          git commit -m "Atualiza a conexão e o registro do TikTok"
+          # O robô do Instagram também grava no repositório; se os dois baterem, tenta de novo.
+          for tentativa in 1 2 3; do
+            git pull --rebase --quiet origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1

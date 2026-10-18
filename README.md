@@ -17,3 +17,15 @@ Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 - `.github/workflows/instagram.yml`: roda a cada 20 minutos, das 11h às 22h (horário de Brasília), e publica o post (imagem ou vídeo) cujo horário chegou.
 - O token fica no segredo `IG_ACCESS_TOKEN` (Settings > Secrets and variables > Actions) e vence em cerca de 60 dias.
 - Para testar sem publicar: Actions > Publicar no Instagram > Run workflow > modo `verificar`.
+
+## Robô do TikTok
+
+- Publica no TikTok os mesmos posts de `instagram/agenda.json`. Um post com `"tiktok": false` fica só no Instagram, e `"legenda_tiktok"` troca a legenda.
+- `tiktok/config.json`: `"ligado"` liga a publicação automática; `"privacidade"` é `SELF_ONLY` (só eu) até o TikTok aprovar o app; `"modo": "rascunho"` manda o post pra caixa de entrada do app em vez de publicar direto; `"marca_propria"` marca o post como divulgação do próprio negócio.
+- `tiktok/publicados.json`: registro do que já foi enviado (o robô atualiza sozinho).
+- `tiktok/conexao.enc`: a conexão com a conta, criptografada com o Client secret (o robô renova sozinho).
+- `.github/workflows/tiktok.yml`: roda nos mesmos horários do Instagram, 5 minutos depois.
+- Segredos: `TIKTOK_CLIENT_KEY` e `TIKTOK_CLIENT_SECRET` (Settings > Secrets and variables > Actions).
+- Para conectar a conta: Actions > Publicar no TikTok > Run workflow > modo `conectar` (sem código mostra o link; depois rode de novo colando o código que o site mostrar).
+- Para testar: modo `verificar` (não publica) ou modo `teste` (publica um post como privado).
+- Fotos são puxadas do site (`https://ivanfulyconsorcios.com.br/`, verificado no TikTok pelos arquivos `tiktok*.txt` na raiz).
