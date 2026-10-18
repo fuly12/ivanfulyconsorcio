@@ -189,7 +189,7 @@ def conectar(codigo):
         # A chave vai escrita em %XX: é o mesmo valor pro TikTok, mas assim o GitHub não troca o link por ***.
         chave = "".join(f"%{b:02X}" for b in CHAVE.encode())
         link = ("https://www.tiktok.com/v2/auth/authorize/?client_key=" + chave + "&response_type=code"
-                "&scope=" + urllib.parse.quote(ESCOPOS, safe="") +
+                "&scope=" + ESCOPOS +
                 "&redirect_uri=" + urllib.parse.quote(RETORNO, safe="") + "&state=" + estado)
         print("Abra este link, entre no TikTok e autorize o Ivan Fuly Posts:")
         print(link)
