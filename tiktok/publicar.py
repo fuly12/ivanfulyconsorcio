@@ -350,18 +350,18 @@ def publicar(chave, post, criador, privacidade, cfg, registro):
 
 def main():
     global CHAVE, SEGREDO
+    modo = os.environ.get("MODO", "agenda").strip() or "agenda"
+    cfg = carregar(CONFIG, {})
+    if modo == "agenda" and not cfg.get("ligado"):
+        print("A publicação automática no TikTok está desligada (tiktok/config.json). Nada foi publicado.")
+        return
     CHAVE = os.environ.get("TIKTOK_CLIENT_KEY", "").strip()
     SEGREDO = os.environ.get("TIKTOK_CLIENT_SECRET", "").strip()
     if not CHAVE or not SEGREDO:
         raise SystemExit("Faltam os segredos TIKTOK_CLIENT_KEY e TIKTOK_CLIENT_SECRET no GitHub "
                          "(Settings > Secrets and variables > Actions).")
-    modo = os.environ.get("MODO", "agenda").strip() or "agenda"
-    cfg = carregar(CONFIG, {})
     if modo == "conectar":
         conectar(os.environ.get("CODIGO", ""))
-        return
-    if modo == "agenda" and not cfg.get("ligado"):
-        print("A publicação automática no TikTok está desligada (tiktok/config.json). Nada foi publicado.")
         return
 
     agenda = carregar(AGENDA, [])
