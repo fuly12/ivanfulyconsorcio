@@ -29,3 +29,9 @@ Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 - Para conectar a conta: Actions > Publicar no TikTok > Run workflow > modo `conectar` (sem código mostra o link; depois rode de novo colando o código que o site mostrar).
 - Para testar: modo `verificar` (não publica) ou modo `teste` (publica um post como privado).
 - Fotos são puxadas do site (`https://ivanfulyconsorcios.com.br/`, verificado no TikTok pelos arquivos `tiktok*.txt` na raiz).
+
+## Robô dos anúncios (Meta)
+
+- `anuncios/meta.py` e `.github/workflows/anuncios.yml`: rodam só quando chamados (Actions > Anúncios da Meta > Run workflow).
+- Modos: `verificar` (o que a chave enxerga), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique).
+- A chave fica no segredo `META_ADS_TOKEN`. O robô não liga anúncio nem mexe em verba.

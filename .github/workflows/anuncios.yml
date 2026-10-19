@@ -1,0 +1,63 @@
+name: Anúncios da Meta
+
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "verificar = mostra o que a chave enxerga; modelo = copia um anúncio feito à mão; relatorio = resultado dos anúncios"
+        type: choice
+        options:
+          - verificar
+          - modelo
+          - relatorio
+        default: verificar
+      anuncio:
+        description: "Só no modo modelo: nome ou id do anúncio que serve de molde"
+        required: false
+        default: ""
+      periodo:
+        description: "Só no modo relatorio"
+        type: choice
+        options:
+          - 7dias
+          - hoje
+          - ontem
+          - 30dias
+          - tudo
+        default: 7dias
+
+permissions:
+  contents: write
+
+concurrency:
+  group: anuncios
+  cancel-in-progress: false
+
+jobs:
+  anuncios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Falar com a API de Marketing da Meta
+        run: python3 anuncios/meta.py
+        env:
+          META_ADS_TOKEN: ${{ secrets.META_ADS_TOKEN }}
+          MODO: ${{ github.event.inputs.modo }}
+          ANUNCIO: ${{ github.event.inputs.anuncio }}
+          PERIODO: ${{ github.event.inputs.periodo }}
+
+      - name: Guardar o modelo do anúncio
+        if: always()
+        run: |
+          if [ -z "$(git status --porcelain -- anuncios/)" ]; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- anuncios/
+          git commit -m "Atualiza o modelo dos anúncios"
+          for tentativa in 1 2 3; do
+            git pull --rebase --quiet origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
