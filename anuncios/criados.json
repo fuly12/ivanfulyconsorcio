@@ -1,11 +1,37 @@
 {
   "conjuntos": {
-    "Casa própria": "120254055763820729"
+    "Casa própria": "120254055763820729",
+    "Sem juros": "120254057223760729",
+    "Confiança": "120254057229550729"
   },
   "anuncios": {
     "Casa própria - 05 passagem": {
       "id": "120254057192070729",
       "criativo": "1102306869204170"
+    },
+    "Casa própria - 08 mapa do Rio": {
+      "id": "120254057222960729",
+      "criativo": "2165085081068149"
+    },
+    "Casa própria - 10 chave": {
+      "id": "120254057223560729",
+      "criativo": "1881589719664024"
+    },
+    "Sem juros - 01 você pode tudo vermelho": {
+      "id": "120254057225320729",
+      "criativo": "1935771807397781"
+    },
+    "Sem juros - 02 você pode tudo azul": {
+      "id": "120254057226290729",
+      "criativo": "1089110867230899"
+    },
+    "Sem juros - 04 juros zero": {
+      "id": "120254057228660729",
+      "criativo": "1888480865864438"
+    },
+    "Sem juros - 11 chega de adiar": {
+      "id": "120254057229020729",
+      "criativo": "1647965666970194"
     }
   }
 }
