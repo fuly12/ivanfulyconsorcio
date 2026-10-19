@@ -14,6 +14,7 @@ Nada aqui liga anúncio: o que o robô cria fica pausado até você ligar no Ger
 import base64
 import json
 import os
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -38,7 +39,26 @@ def resumo(texto):
             f.write(texto + "\n")
 
 
+# Erros de "chamadas demais": a conta com acesso limitado à API aguenta poucas chamadas por hora.
+LIMITE_DE_CHAMADAS = {4, 17, 32, 613, 80000, 80003, 80004, 80014}
+
+
 def chamar(metodo, caminho, **params):
+    for espera in (60, 180, 300, None):
+        try:
+            return _chamar(metodo, caminho, **params)
+        except LimiteDeChamadas:
+            if espera is None:
+                raise SystemExit("A Meta segurou o robô por excesso de chamadas. Rode de novo daqui a uma hora.")
+            print(f"A Meta pediu uma pausa (chamadas demais). Esperando {espera} segundos...")
+            time.sleep(espera)
+
+
+class LimiteDeChamadas(Exception):
+    pass
+
+
+def _chamar(metodo, caminho, **params):
     params = {k: json.dumps(v) if isinstance(v, (dict, list)) else v for k, v in params.items()}
     params["access_token"] = TOKEN
     corpo = urllib.parse.urlencode(params)
@@ -54,6 +74,8 @@ def chamar(metodo, caminho, **params):
         texto = e.read().decode(errors="replace")
         try:
             erro = json.loads(texto).get("error", {})
+            if erro.get("code") in LIMITE_DE_CHAMADAS:
+                raise LimiteDeChamadas()
             msg = erro.get("error_user_msg") or erro.get("message", texto)
             msg = f"{erro.get('type', '')} {erro.get('code', '')}/{erro.get('error_subcode', '')}: {msg}"
         except ValueError:
@@ -270,6 +292,7 @@ def criar(limite):
             salvar(CRIADOS, criados)
             feitos += 1
             print(f"Criado (pausado): {nome} ({ad['id']})")
+            time.sleep(10)
             linhas.append(f"- {nome}")
     print(f"Pronto: {feitos} anúncio(s) criado(s) nesta rodada.")
     resumo("\n".join(linhas + ["", f"{feitos} anúncio(s) criado(s), todos pausados."]))
