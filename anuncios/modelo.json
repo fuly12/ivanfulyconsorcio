@@ -1,0 +1,124 @@
+{
+  "anuncio": {
+    "id": "120254055763810729",
+    "name": "Casa própria - 03 recibo",
+    "account_id": "859729610420085",
+    "campaign_id": "120254055763800729",
+    "adset_id": "120254055763820729",
+    "effective_status": "ACTIVE",
+    "creative": {
+      "id": "1499111978711338"
+    }
+  },
+  "criativo": {
+    "actor_id": "1545786665278456",
+    "call_to_action_type": "LEARN_MORE",
+    "id": "1499111978711338",
+    "instagram_user_id": "17841405874761863",
+    "name": "Troque o recibo pela chave 2026-10-18-9ef21fe537af84edccc68ed8df98fdc2",
+    "object_type": "SHARE",
+    "object_story_spec": {
+      "page_id": "1545786665278456",
+      "instagram_user_id": "17841405874761863",
+      "link_data": {
+        "link": "https://ivanfulyconsorcios.com.br/?anuncio=casa",
+        "message": "Todo mês, um recibo de aluguel. E nenhuma chave.\n\nNo consórcio imobiliário, cada parcela te leva até a sua casa, sem juros. Vamos conversar?",
+        "name": "Troque o recibo pela chave",
+        "caption": "ivanfulyconsorcios.com.br",
+        "description": "Simulação sem compromisso",
+        "image_hash": "fbb43d8d573a012541c324310fdea588",
+        "attachment_style": "link",
+        "call_to_action": {
+          "type": "LEARN_MORE"
+        }
+      }
+    },
+    "degrees_of_freedom_spec": {
+      "creative_features_spec": {
+        "advantage_plus_creative": {
+          "enroll_status": "OPT_OUT"
+        },
+        "image_touchups": {
+          "enroll_status": "OPT_OUT"
+        },
+        "product_browsing": {
+          "enroll_status": "OPT_OUT"
+        },
+        "site_extensions": {
+          "enroll_status": "OPT_OUT"
+        },
+        "standard_enhancements": {
+          "enroll_status": "OPT_IN"
+        }
+      }
+    },
+    "contextual_multi_ads": {
+      "enroll_status": "OPT_OUT"
+    },
+    "status": "ACTIVE"
+  },
+  "conjunto": {
+    "id": "120254055763820729",
+    "name": "Casa própria",
+    "daily_budget": "1700",
+    "lifetime_budget": "0",
+    "optimization_goal": "LANDING_PAGE_VIEWS",
+    "billing_event": "IMPRESSIONS",
+    "bid_strategy": "LOWEST_COST_WITHOUT_CAP",
+    "destination_type": "UNDEFINED",
+    "attribution_spec": [
+      {
+        "event_type": "CLICK_THROUGH",
+        "window_days": 1
+      }
+    ],
+    "targeting": {
+      "age_max": 65,
+      "age_min": 18,
+      "geo_locations": {
+        "places": [
+          {
+            "key": "283964848403832",
+            "name": "Campo Grande RJ",
+            "distance_unit": "kilometer",
+            "latitude": -22.9175194,
+            "longitude": -43.5372166,
+            "radius": 17,
+            "primary_city_id": 267027,
+            "region_id": 454,
+            "country": "BR"
+          }
+        ],
+        "location_types": [
+          "frequently_in",
+          "home",
+          "recent"
+        ]
+      },
+      "brand_safety_content_filter_levels": [
+        "FACEBOOK_RELAXED",
+        "AN_RELAXED",
+        "FEED_RELAXED"
+      ],
+      "targeting_automation": {
+        "advantage_audience": 1,
+        "creative_audience_pairing": 0
+      }
+    },
+    "start_time": "2026-10-19T10:00:00+0000",
+    "effective_status": "ACTIVE"
+  },
+  "campanha": {
+    "id": "120254055763800729",
+    "name": "Site - Teste de artes - Campo Grande",
+    "effective_status": "ACTIVE",
+    "objective": "OUTCOME_TRAFFIC",
+    "buying_type": "AUCTION",
+    "special_ad_categories": [
+      "FINANCIAL_PRODUCTS_SERVICES"
+    ],
+    "special_ad_category_country": [
+      "BR"
+    ]
+  }
+}
