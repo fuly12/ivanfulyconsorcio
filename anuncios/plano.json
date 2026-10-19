@@ -1,0 +1,117 @@
+{
+  "campanha": "120254055763800729",
+  "modelo_conjunto": "120254055763820729",
+  "meta_de_desempenho": "LINK_CLICKS",
+  "descricao": "Simulação sem compromisso",
+  "link_de_exibicao": "ivanfulyconsorcios.com.br",
+  "conjuntos": [
+    {
+      "nome": "Casa própria",
+      "orcamento_dia": 17,
+      "anuncio": "casa",
+      "artes": [
+        "03",
+        "05",
+        "08",
+        "10"
+      ]
+    },
+    {
+      "nome": "Sem juros",
+      "orcamento_dia": 17,
+      "anuncio": "juros",
+      "artes": [
+        "01",
+        "02",
+        "04",
+        "11"
+      ]
+    },
+    {
+      "nome": "Confiança",
+      "orcamento_dia": 16,
+      "anuncio": "sonho",
+      "artes": [
+        "06",
+        "07",
+        "09",
+        "12"
+      ]
+    }
+  ],
+  "artes": {
+    "01": {
+      "arquivo": "01-voce-pode-tudo-vermelho",
+      "nome": "01 você pode tudo vermelho",
+      "titulo": "Com o consórcio, você pode tudo",
+      "texto": "Casa, apartamento, carro, moto, caminhão, construir no seu terreno ou até investir: com o consórcio, você pode tudo.\n\nSem juros e com parcela que cabe no seu mês. Me chama no WhatsApp que eu te mostro o caminho."
+    },
+    "02": {
+      "arquivo": "02-voce-pode-tudo-azul",
+      "nome": "02 você pode tudo azul",
+      "titulo": "Com o consórcio, você pode tudo",
+      "texto": "Casa, apartamento, carro, moto, caminhão, construir no seu terreno ou até investir: com o consórcio, você pode tudo.\n\nSem juros e com parcela que cabe no seu mês. Me chama no WhatsApp que eu te mostro o caminho."
+    },
+    "03": {
+      "arquivo": "03-recibo-do-aluguel",
+      "nome": "03 recibo",
+      "titulo": "Troque o recibo pela chave",
+      "texto": "Todo mês, um recibo de aluguel. E nenhuma chave.\n\nNo consórcio imobiliário, cada parcela te leva até a sua casa, sem juros. Vamos conversar?"
+    },
+    "04": {
+      "arquivo": "04-etiqueta-juros-zero",
+      "nome": "04 juros zero",
+      "titulo": "Sem juros. Sem surpresa.",
+      "texto": "Juros: R$ 0,00.\n\nNo consórcio você conquista casa, carro ou moto sem pagar juros. Você paga só a taxa de administração, já inclusa na parcela. Eu te explico tudo antes de assinar."
+    },
+    "05": {
+      "arquivo": "05-passagem-casa-propria",
+      "nome": "05 passagem",
+      "titulo": "Sua passagem pra casa própria",
+      "texto": "Saída: aluguel. Destino: casa própria. Classe: sem juros.\n\nConsórcio imobiliário com parcela que cabe no seu mês, e eu te acompanho em toda a viagem."
+    },
+    "06": {
+      "arquivo": "06-post-its-dos-sonhos",
+      "nome": "06 post-its",
+      "titulo": "Tire o sonho do papel",
+      "texto": "Sair do aluguel. Carro novo. A moto dos sonhos.\n\nSeu sonho merece mais que um post-it na geladeira. Eu monto o plano com você: consórcio sem juros, com parcela que cabe no mês."
+    },
+    "07": {
+      "arquivo": "07-conversa-duvida",
+      "nome": "07 conversa",
+      "titulo": "Tire a sua dúvida",
+      "texto": "\"Dá pra comprar a casa própria sem pagar juros?\"\n\nDá sim! No consórcio você paga só a taxa de administração, já inclusa na parcela. Me manda a sua dúvida no WhatsApp."
+    },
+    "08": {
+      "arquivo": "08-mapa-do-rio",
+      "nome": "08 mapa do Rio",
+      "titulo": "Sua casa no Rio, sem juros",
+      "texto": "Barra, Tijuca, Méier, Copacabana, Campo Grande... Em qual bairro do Rio fica o seu sonho?\n\nCasa ou apê com consórcio imobiliário, sem juros e com parcela que cabe no seu mês."
+    },
+    "09": {
+      "arquivo": "09-quadro-a-conta-que-fecha",
+      "nome": "09 quadro",
+      "titulo": "A conta que fecha",
+      "texto": "Parcela que cabe no mês + sem juros + um bom plano = o sonho na sua mão.\n\nMe chama que a gente faz a sua conta, sem compromisso."
+    },
+    "10": {
+      "arquivo": "10-chave-com-o-seu-nome",
+      "nome": "10 chave",
+      "titulo": "A chave da sua casa",
+      "texto": "Essa chave tem o seu nome.\n\nCasa própria com consórcio: sem juros e com parcela que cabe no seu mês. Me chama no WhatsApp."
+    },
+    "11": {
+      "arquivo": "11-cartaz-chega-de-adiar",
+      "nome": "11 chega de adiar",
+      "titulo": "Comece o seu plano",
+      "texto": "Chega de adiar.\n\nCasa, carro ou moto: eu monto o plano com você, sem juros e com parcela que cabe no mês."
+    },
+    "12": {
+      "arquivo": "12-carta-escrita-a-mao",
+      "nome": "12 carta",
+      "titulo": "Fale com o Ivan",
+      "texto": "Oi! Eu sou o Ivan, consultor de consórcios no Rio.\n\nMeu trabalho é ajudar você a tirar o sonho do papel, sem juros e sem promessa milagrosa. Me chama que eu te explico tudo, sem compromisso."
+    }
+  },
+  "ajustar_conjunto_modelo": false
+}

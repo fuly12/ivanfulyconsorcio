@@ -5,10 +5,13 @@ Modos (variável MODO):
   verificar  mostra o que a chave enxerga: contas de anúncios, páginas, Instagram e campanhas
   modelo     mostra como a Meta guardou um anúncio feito à mão (variável ANUNCIO = nome ou id)
              e grava em anuncios/modelo.json, pra servir de molde pros próximos
+  criar      cria os conjuntos e anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
+             (variável LIMITE = quantos anúncios no máximo nesta rodada; vazio = todos)
   relatorio  gasto, alcance, cliques e custo por clique de cada anúncio (variável PERIODO)
 
-Nada aqui liga anúncio nem mexe em verba.
+Nada aqui liga anúncio: o que o robô cria fica pausado até você ligar no Gerenciador.
 """
+import base64
 import json
 import os
 import urllib.error
@@ -18,6 +21,9 @@ import urllib.request
 API = "https://graph.facebook.com/v23.0"
 PASTA = os.path.dirname(os.path.abspath(__file__))
 MODELO = os.path.join(PASTA, "modelo.json")
+PLANO = os.path.join(PASTA, "plano.json")
+CRIADOS = os.path.join(PASTA, "criados.json")
+ARTES = os.path.join(PASTA, "artes")
 PERIODOS = {"hoje": "today", "ontem": "yesterday", "7dias": "last_7d", "30dias": "last_30d", "tudo": "maximum"}
 STATUS_CONTA = {1: "ativa", 2: "desativada", 3: "pagamento pendente", 7: "em análise", 9: "em período de carência",
                 100: "fechamento pendente", 101: "fechada"}
@@ -154,6 +160,115 @@ def modelo(alvo):
     resumo(f"### Modelo gravado: {ad['name']}\n\nCampanha {campanha['name']}, conjunto {conjunto['name']}.")
 
 
+def carregar(caminho, padrao):
+    try:
+        with open(caminho, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return padrao
+
+
+def salvar(caminho, dados):
+    with open(caminho, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
+def enviar_imagem(conta, arquivo):
+    with open(os.path.join(ARTES, arquivo), "rb") as f:
+        dados = base64.b64encode(f.read()).decode()
+    imagens = chamar("POST", f"{conta}/adimages", bytes=dados, name=arquivo)["images"]
+    return next(iter(imagens.values()))["hash"]
+
+
+def especificacao(arte, link, plano, feed, vertical):
+    """Uma arte em duas versões: a em pé (9:16) nos Stories e Reels, a normal em todo o resto."""
+    return {
+        "images": [{"hash": feed, "adlabels": [{"name": "feed"}]}, {"hash": vertical, "adlabels": [{"name": "vertical"}]}],
+        "bodies": [{"text": arte["texto"]}],
+        "titles": [{"text": arte["titulo"]}],
+        "descriptions": [{"text": plano["descricao"]}],
+        "link_urls": [{"website_url": link, "display_url": plano["link_de_exibicao"]}],
+        "call_to_action_types": ["LEARN_MORE"],
+        "ad_formats": ["SINGLE_IMAGE"],
+        "optimization_type": "PLACEMENT",
+        "asset_customization_rules": [
+            {"customization_spec": {"publisher_platforms": ["facebook", "instagram", "messenger"],
+                                    "facebook_positions": ["story", "facebook_reels"],
+                                    "instagram_positions": ["story", "reels"],
+                                    "messenger_positions": ["story"]},
+             "image_label": {"name": "vertical"}, "priority": 1},
+            {"customization_spec": {"publisher_platforms": ["facebook", "instagram", "messenger"]},
+             "image_label": {"name": "feed"}, "priority": 2},
+        ],
+    }
+
+
+def criar(limite):
+    plano = carregar(PLANO, None)
+    modelo = carregar(MODELO, None)
+    if not plano or not modelo:
+        raise SystemExit("Faltam anuncios/plano.json ou anuncios/modelo.json (rode o modo modelo antes).")
+    criados = carregar(CRIADOS, {})
+    base = chamar("GET", plano["modelo_conjunto"], fields="id,name,account_id,optimization_goal,daily_budget")
+    conta = f"act_{base['account_id']}"
+    historia = modelo["criativo"]["object_story_spec"]
+    identidade = {"page_id": historia["page_id"], "instagram_user_id": historia.get("instagram_user_id")}
+    melhorias = modelo["criativo"].get("degrees_of_freedom_spec")  # as mesmas escolhas do anúncio feito à mão
+    feitos = 0
+    linhas = ["### Anúncios criados (pausados)", ""]
+
+    existentes = {c["name"]: c for c in listar(f"{plano['campanha']}/adsets", fields="id,name,optimization_goal,daily_budget")}
+    for cj in plano["conjuntos"]:
+        atual = existentes.get(cj["nome"])
+        if not atual:
+            copia = chamar("POST", f"{base['id']}/copies", deep_copy="false", status_option="PAUSED")
+            novo = copia.get("copied_adset_id") or copia.get("ad_object_ids", [{}])[0].get("copied_id")
+            atual = chamar("GET", novo, fields="id,name,optimization_goal,daily_budget")
+            print(f"Conjunto copiado do modelo: {cj['nome']} ({novo}), pausado")
+        mudar = {}
+        if atual["name"] != cj["nome"]:
+            mudar["name"] = cj["nome"]
+        e_modelo = atual["id"] == base["id"]
+        if not e_modelo or plano.get("ajustar_conjunto_modelo"):
+            if int(atual.get("daily_budget") or 0) != round(cj["orcamento_dia"] * 100):
+                mudar["daily_budget"] = round(cj["orcamento_dia"] * 100)
+            if atual.get("optimization_goal") != plano["meta_de_desempenho"]:
+                mudar["optimization_goal"] = plano["meta_de_desempenho"]
+        if mudar:
+            chamar("POST", atual["id"], **mudar)
+            print(f"Conjunto {cj['nome']}: ajustado {', '.join(mudar)}")
+        criados.setdefault("conjuntos", {})[cj["nome"]] = atual["id"]
+        salvar(CRIADOS, criados)
+
+        anuncios = {a["name"] for a in listar(f"{atual['id']}/ads", fields="id,name")}
+        link = f"https://ivanfulyconsorcios.com.br/?anuncio={cj['anuncio']}"
+        for num in cj["artes"]:
+            arte = plano["artes"][num]
+            nome = f"{cj['nome']} - {arte['nome']}"
+            if nome in anuncios:
+                continue
+            if limite and feitos >= limite:
+                print(f"Parei no limite de {limite} anúncio(s) nesta rodada.")
+                resumo("\n".join(linhas))
+                return
+            feed = enviar_imagem(conta, f"{arte['arquivo']}-FEED.jpg")
+            vertical = enviar_imagem(conta, f"{arte['arquivo']}-STORIES.jpg")
+            extras = {"degrees_of_freedom_spec": melhorias} if melhorias else {}
+            criativo = chamar("POST", f"{conta}/adcreatives", name=nome, object_story_spec=identidade,
+                              asset_feed_spec=especificacao(arte, link, plano, feed, vertical),
+                              contextual_multi_ads={"enroll_status": "OPT_OUT"}, **extras)
+            ad = chamar("POST", f"{conta}/ads", name=nome, adset_id=atual["id"],
+                        creative={"creative_id": criativo["id"]}, status="PAUSED")
+            criados.setdefault("anuncios", {})[nome] = {"id": ad["id"], "criativo": criativo["id"]}
+            salvar(CRIADOS, criados)
+            feitos += 1
+            print(f"Criado (pausado): {nome} ({ad['id']})")
+            linhas.append(f"- {nome}")
+    print(f"Pronto: {feitos} anúncio(s) criado(s) nesta rodada.")
+    resumo("\n".join(linhas + ["", f"{feitos} anúncio(s) criado(s), todos pausados."]))
+
+
 def relatorio(periodo):
     preset = PERIODOS.get(periodo, "last_7d")
     linhas = [f"### Resultado dos anúncios ({periodo})", "",
@@ -192,6 +307,9 @@ def main():
         verificar()
     elif modo == "modelo":
         modelo(os.environ.get("ANUNCIO", "").strip())
+    elif modo == "criar":
+        limite = os.environ.get("LIMITE", "").strip()
+        criar(int(limite) if limite.isdigit() else 0)
     elif modo == "relatorio":
         relatorio(os.environ.get("PERIODO", "7dias").strip())
     else:
