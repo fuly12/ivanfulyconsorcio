@@ -131,6 +131,16 @@ def modelo(alvo):
     criativo = chamar("GET", ad["creative"]["id"], fields=(
         "id,name,object_story_spec,asset_feed_spec,degrees_of_freedom_spec,url_tags,call_to_action_type,"
         "contextual_multi_ads,instagram_user_id,actor_id,object_type,status"))
+    # Campos que só existem em alguns criativos (versão em pé, cortes): um por vez, pra um campo ausente não derrubar o resto.
+    for campo in ("asset_feed_spec", "portrait_customizations", "platform_customizations", "image_crops",
+                  "creative_sourcing_spec", "image_hash", "thumbnail_url"):
+        if campo not in criativo:
+            try:
+                valor = chamar("GET", criativo["id"], fields=campo).get(campo)
+            except SystemExit as e:
+                valor = f"(erro: {e})"
+            if valor is not None:
+                criativo[campo] = valor
     conjunto = chamar("GET", ad["adset_id"], fields=(
         "id,name,daily_budget,lifetime_budget,optimization_goal,billing_event,bid_strategy,destination_type,"
         "promoted_object,attribution_spec,targeting,start_time,end_time,effective_status"))
