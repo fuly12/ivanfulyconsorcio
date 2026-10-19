@@ -1293,10 +1293,20 @@ const MENSAGENS = {
   quiz: () => ["Olá, Ivan! Fiz o teste no seu site:", ...QUIZ.map((q) => `• ${q.curto}: ${rotulo(q.id)}`), "Quero uma simulação."].join("\n"),
 };
 
+// Quem chega por um anúncio (?anuncio=casa) já conta na mensagem de qual anúncio veio.
+const ANUNCIOS = { casa: "casa própria", juros: "consórcio sem juros", sonho: "tirar o sonho do papel" };
+const ANUNCIO = ANUNCIOS[new URLSearchParams(location.search).get("anuncio")];
+
+function comAnuncio(texto) {
+  if (!ANUNCIO) return texto;
+  const resto = texto.replace(/^Olá, Ivan! (Vi seu site e )?/, "");
+  return `Olá, Ivan! Vi seu anúncio sobre ${ANUNCIO}. ${resto.charAt(0).toUpperCase()}${resto.slice(1)}`;
+}
+
 function refreshWa() {
   if (!WHATSAPP_NUMBER) return;
   document.querySelectorAll("[data-wa]").forEach((a) => {
-    a.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(MENSAGENS[a.dataset.wa]())}`;
+    a.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(comAnuncio(MENSAGENS[a.dataset.wa]()))}`;
     a.target = "_blank";
     a.rel = "noopener";
   });
