@@ -174,6 +174,13 @@ def salvar(caminho, dados):
         f.write("\n")
 
 
+# A Meta não aceita mais o pacote "melhorias padrão": cada melhoria com IA vai desligada, uma por uma,
+# pra arte e o texto saírem exatamente como foram aprovados.
+MELHORIAS_DESLIGADAS = ("image_touchups", "image_brightness_and_contrast", "image_uncrop", "image_templates",
+                        "text_optimizations", "enhance_cta", "adapt_to_placement", "site_extensions",
+                        "product_browsing")
+
+
 def enviar_imagem(conta, arquivo):
     with open(os.path.join(ARTES, arquivo), "rb") as f:
         dados = base64.b64encode(f.read()).decode()
@@ -214,7 +221,7 @@ def criar(limite):
     conta = f"act_{base['account_id']}"
     historia = modelo["criativo"]["object_story_spec"]
     identidade = {"page_id": historia["page_id"], "instagram_user_id": historia.get("instagram_user_id")}
-    melhorias = modelo["criativo"].get("degrees_of_freedom_spec")  # as mesmas escolhas do anúncio feito à mão
+    melhorias = {"creative_features_spec": {nome: {"enroll_status": "OPT_OUT"} for nome in MELHORIAS_DESLIGADAS}}
     feitos = 0
     linhas = ["### Anúncios criados (pausados)", ""]
 
@@ -254,10 +261,9 @@ def criar(limite):
                 return
             feed = enviar_imagem(conta, f"{arte['arquivo']}-FEED.jpg")
             vertical = enviar_imagem(conta, f"{arte['arquivo']}-STORIES.jpg")
-            extras = {"degrees_of_freedom_spec": melhorias} if melhorias else {}
             criativo = chamar("POST", f"{conta}/adcreatives", name=nome, object_story_spec=identidade,
                               asset_feed_spec=especificacao(arte, link, plano, feed, vertical),
-                              contextual_multi_ads={"enroll_status": "OPT_OUT"}, **extras)
+                              degrees_of_freedom_spec=melhorias, contextual_multi_ads={"enroll_status": "OPT_OUT"})
             ad = chamar("POST", f"{conta}/ads", name=nome, adset_id=atual["id"],
                         creative={"creative_id": criativo["id"]}, status="PAUSED")
             criados.setdefault("anuncios", {})[nome] = {"id": ad["id"], "criativo": criativo["id"]}
