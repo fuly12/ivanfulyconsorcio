@@ -5,12 +5,13 @@ Modos (variável MODO):
   verificar  mostra o que a chave enxerga: contas de anúncios, pixels, páginas, Instagram e campanhas
   modelo     mostra como a Meta guardou um anúncio feito à mão (variável ANUNCIO = nome ou id)
              e grava em anuncios/modelo.json, pra servir de molde pros próximos
-  criar      cria os conjuntos e anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
+  criar      cria a campanha, os conjuntos e os anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
              (variável LIMITE = quantos anúncios no máximo nesta rodada; vazio = todos)
   relatorio  gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram
              (Instagram, Facebook, apps parceiros...) e o que o Pixel contou no site (variável PERIODO)
 
 Nada aqui liga anúncio: o que o robô cria fica pausado até você ligar no Gerenciador.
+E o robô nunca altera conjunto que está ligado: o que não serve se desliga, e o novo nasce do zero.
 """
 import base64
 import json
@@ -235,8 +236,21 @@ def enviar_imagem(conta, arquivo):
     return next(iter(imagens.values()))["hash"]
 
 
+# Posições em pé (9:16) de cada plataforma.
+VERTICAIS = {"facebook": ["story", "facebook_reels"], "instagram": ["story", "reels"], "messenger": ["story"]}
+
+
 def especificacao(arte, link, plano, feed, vertical):
     """Uma arte em duas versões: a em pé (9:16) nos Stories e Reels, a normal em todo o resto."""
+    lugares = plano.get("posicionamentos") or {}
+    plataformas = lugares.get("publisher_platforms") or list(VERTICAIS)
+    em_pe = {}
+    for p in plataformas:
+        escolhidas = lugares.get(f"{p}_positions")
+        posicoes = [x for x in VERTICAIS.get(p, []) if escolhidas is None or x in escolhidas]
+        if posicoes:
+            em_pe[f"{p}_positions"] = posicoes
+    em_pe = {"publisher_platforms": [p for p in plataformas if f"{p}_positions" in em_pe], **em_pe}
     return {
         "images": [{"hash": feed, "adlabels": [{"name": "feed"}]}, {"hash": vertical, "adlabels": [{"name": "vertical"}]}],
         "bodies": [{"text": arte["texto"]}],
@@ -247,13 +261,8 @@ def especificacao(arte, link, plano, feed, vertical):
         "ad_formats": ["SINGLE_IMAGE"],
         "optimization_type": "PLACEMENT",
         "asset_customization_rules": [
-            {"customization_spec": {"publisher_platforms": ["facebook", "instagram", "messenger"],
-                                    "facebook_positions": ["story", "facebook_reels"],
-                                    "instagram_positions": ["story", "reels"],
-                                    "messenger_positions": ["story"]},
-             "image_label": {"name": "vertical"}, "priority": 1},
-            {"customization_spec": {"publisher_platforms": ["facebook", "instagram", "messenger"]},
-             "image_label": {"name": "feed"}, "priority": 2},
+            {"customization_spec": em_pe, "image_label": {"name": "vertical"}, "priority": 1},
+            {"customization_spec": {"publisher_platforms": plataformas}, "image_label": {"name": "feed"}, "priority": 2},
         ],
     }
 
@@ -272,13 +281,31 @@ def criar(limite):
     feitos = 0
     linhas = ["### Anúncios criados (pausados)", ""]
 
-    existentes = {c["name"]: c for c in listar(f"{plano['campanha']}/adsets", fields="id,name,optimization_goal,daily_budget")}
+    if not plano.get("campanha"):
+        origem = modelo["campanha"]
+        campanha = chamar("POST", f"{conta}/campaigns", name=plano["nome_da_campanha"], objective=origem["objective"],
+                          buying_type=origem.get("buying_type", "AUCTION"), status="PAUSED",
+                          special_ad_categories=origem.get("special_ad_categories", []),
+                          special_ad_category_country=origem.get("special_ad_category_country", []),
+                          is_adset_budget_sharing_enabled="false")
+        plano["campanha"] = campanha["id"]
+        salvar(PLANO, plano)
+        print(f"Campanha criada (pausada): {plano['nome_da_campanha']} ({campanha['id']})")
+        linhas += [f"Campanha nova (pausada): **{plano['nome_da_campanha']}**", ""]
+
+    campos = "id,name,optimization_goal,daily_budget,effective_status"
+    existentes = {c["name"]: c for c in listar(f"{plano['campanha']}/adsets", fields=campos)}
     for cj in plano["conjuntos"]:
         atual = existentes.get(cj["nome"])
+        if atual and atual.get("effective_status") == "ACTIVE":
+            print(f"Conjunto {cj['nome']} está ligado: não mexo nele (o que não serve se desliga, e o novo nasce do zero).")
+            linhas.append(f"- {cj['nome']}: ligado, não mexi")
+            continue
         if not atual:
-            copia = chamar("POST", f"{base['id']}/copies", deep_copy="false", status_option="PAUSED")
+            copia = chamar("POST", f"{base['id']}/copies", campaign_id=plano["campanha"], deep_copy="false",
+                           status_option="PAUSED")
             novo = copia.get("copied_adset_id") or copia.get("ad_object_ids", [{}])[0].get("copied_id")
-            atual = chamar("GET", novo, fields="id,name,optimization_goal,daily_budget")
+            atual = chamar("GET", novo, fields=campos)
             print(f"Conjunto copiado do modelo: {cj['nome']} ({novo}), pausado")
         mudar = {}
         if atual["name"] != cj["nome"]:
@@ -289,6 +316,14 @@ def criar(limite):
                 mudar["daily_budget"] = round(cj["orcamento_dia"] * 100)
             if atual.get("optimization_goal") != plano["meta_de_desempenho"]:
                 mudar["optimization_goal"] = plano["meta_de_desempenho"]
+            if plano.get("posicionamentos"):
+                alvo = chamar("GET", atual["id"], fields="targeting")["targeting"]
+                if any(alvo.get(k) != v for k, v in plano["posicionamentos"].items()):
+                    alvo.update(plano["posicionamentos"])
+                    if "audience_network" not in alvo["publisher_platforms"] and alvo.get("brand_safety_content_filter_levels"):
+                        alvo["brand_safety_content_filter_levels"] = [
+                            n for n in alvo["brand_safety_content_filter_levels"] if not n.startswith("AN_")]
+                    mudar["targeting"] = alvo
         if mudar:
             chamar("POST", atual["id"], **mudar)
             print(f"Conjunto {cj['nome']}: ajustado {', '.join(mudar)}")
@@ -394,14 +429,22 @@ def eventos_do_pixel(preset):
 
 
 def lugares(preset):
-    campanha = carregar(PLANO, {}).get("campanha")
-    if not campanha:
-        return []
+    plano = carregar(PLANO, {})
+    linhas = []
+    for campanha, qual in ((plano.get("campanha"), "campanha atual"), (plano.get("campanha_anterior"), "campanha anterior")):
+        if campanha:
+            linhas += lugares_da_campanha(campanha, qual, preset)
+    return linhas
+
+
+def lugares_da_campanha(campanha, qual, preset):
     dados = listar(f"{campanha}/insights", date_preset=preset, breakdowns="publisher_platform,platform_position",
                    fields="spend,impressions,inline_link_clicks")
-    linhas = ["", "### Onde os cliques aconteceram (campanha do plano)", "",
+    if not dados:
+        return []
+    linhas = ["", f"### Onde os cliques aconteceram ({qual})", "",
               "| Onde | Posição | Gasto | Impressões | Cliques no link | Custo por clique |", "|---|---|---|---|---|---|"]
-    print("\nOnde os cliques aconteceram:")
+    print(f"\nOnde os cliques aconteceram ({qual}):")
     for d in sorted(dados, key=lambda d: -float(d.get("inline_link_clicks") or 0)):
         gasto = float(d.get("spend") or 0)
         cliques = int(float(d.get("inline_link_clicks") or 0))

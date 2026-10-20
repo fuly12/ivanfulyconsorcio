@@ -34,5 +34,7 @@ Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 ## Robô dos anúncios (Meta)
 
 - `anuncios/meta.py` e `.github/workflows/anuncios.yml`: rodam só quando chamados (Actions > Anúncios da Meta > Run workflow).
-- Modos: `verificar` (o que a chave enxerga), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram e quantas visitas e toques no WhatsApp o Pixel contou no site).
-- A chave fica no segredo `META_ADS_TOKEN`. O robô não liga anúncio nem mexe em verba.
+- Modos: `verificar` (o que a chave enxerga, inclusive os pixels), `criar` (cria a campanha, os conjuntos e os anúncios de `anuncios/plano.json` que ainda não existem, todos pausados), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram e quantas visitas e toques no WhatsApp o Pixel contou no site).
+- A chave fica no segredo `META_ADS_TOKEN`. O robô não liga anúncio nem mexe em verba de nada que esteja rodando.
+- Regra: campanha ligada não se altera. O que não serve se desliga, e o novo nasce do zero numa campanha nova (em `plano.json`, `campanha` vazio cria uma nova com o nome de `nome_da_campanha`). O robô pula qualquer conjunto que estiver ligado.
+- `anuncios/criados.json`: registro do que o robô criou na campanha atual; `criados-campanha-1.json` guarda o da primeira campanha.

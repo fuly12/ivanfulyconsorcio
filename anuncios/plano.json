@@ -1,8 +1,26 @@
 {
-  "campanha": "120254055763800729",
+  "campanha": "",
+  "nome_da_campanha": "Site - Campo Grande - sem Reels do Facebook",
+  "campanha_anterior": "120254055763800729",
   "pixel": "1014294278231001",
   "modelo_conjunto": "120254055763820729",
   "meta_de_desempenho": "LINK_CLICKS",
+  "posicionamentos": {
+    "publisher_platforms": [
+      "facebook",
+      "instagram"
+    ],
+    "facebook_positions": [
+      "feed",
+      "story"
+    ],
+    "instagram_positions": [
+      "stream",
+      "story",
+      "reels",
+      "explore"
+    ]
+  },
   "descricao": "Simulação sem compromisso",
   "link_de_exibicao": "ivanfulyconsorcios.com.br",
   "conjuntos": [
@@ -12,9 +30,7 @@
       "anuncio": "casa",
       "artes": [
         "03",
-        "05",
-        "08",
-        "10"
+        "08"
       ]
     },
     {
@@ -22,10 +38,8 @@
       "orcamento_dia": 17,
       "anuncio": "juros",
       "artes": [
-        "01",
-        "02",
-        "04",
-        "11"
+        "11",
+        "02"
       ]
     },
     {
@@ -33,10 +47,8 @@
       "orcamento_dia": 16,
       "anuncio": "sonho",
       "artes": [
-        "06",
-        "07",
-        "09",
-        "12"
+        "12",
+        "09"
       ]
     }
   ],
@@ -113,6 +125,5 @@
       "titulo": "Fale com o Ivan",
       "texto": "Oi! Eu sou o Ivan, consultor de consórcios no Rio.\n\nMeu trabalho é ajudar você a tirar o sonho do papel, sem juros e sem promessa milagrosa. Me chama que eu te explico tudo, sem compromisso."
     }
-  },
-  "ajustar_conjunto_modelo": true
+  }
 }
