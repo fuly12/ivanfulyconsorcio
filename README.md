@@ -33,5 +33,5 @@ Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 ## Robô dos anúncios (Meta)
 
 - `anuncios/meta.py` e `.github/workflows/anuncios.yml`: rodam só quando chamados (Actions > Anúncios da Meta > Run workflow).
-- Modos: `verificar` (o que a chave enxerga), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique).
+- Modos: `verificar` (o que a chave enxerga), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique de cada anúncio, e onde os cliques aconteceram: Instagram, Facebook, apps parceiros).
 - A chave fica no segredo `META_ADS_TOKEN`. O robô não liga anúncio nem mexe em verba.

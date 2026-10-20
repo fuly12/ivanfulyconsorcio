@@ -7,7 +7,8 @@ Modos (variável MODO):
              e grava em anuncios/modelo.json, pra servir de molde pros próximos
   criar      cria os conjuntos e anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
              (variável LIMITE = quantos anúncios no máximo nesta rodada; vazio = todos)
-  relatorio  gasto, alcance, cliques e custo por clique de cada anúncio (variável PERIODO)
+  relatorio  gasto, alcance, cliques e custo por clique de cada anúncio, e onde os cliques aconteceram
+             (Instagram, Facebook, apps parceiros...) (variável PERIODO)
 
 Nada aqui liga anúncio: o que o robô cria fica pausado até você ligar no Gerenciador.
 """
@@ -323,7 +324,34 @@ def relatorio(periodo):
     fim = f"Total: {brl(total_gasto)} gastos, {int(total_cliques)} cliques no link, {media} por clique."
     print(fim)
     linhas += ["", fim]
+    linhas += lugares(preset)
     resumo("\n".join(linhas))
+
+
+# Onde a campanha do plano apareceu: clique barato em app de terceiros quase nunca vira conversa.
+PLATAFORMAS = {"facebook": "Facebook", "instagram": "Instagram", "messenger": "Messenger",
+               "audience_network": "Apps e sites parceiros (Audience Network)", "threads": "Threads"}
+
+
+def lugares(preset):
+    campanha = carregar(PLANO, {}).get("campanha")
+    if not campanha:
+        return []
+    dados = listar(f"{campanha}/insights", date_preset=preset, breakdowns="publisher_platform,platform_position",
+                   fields="spend,impressions,inline_link_clicks")
+    linhas = ["", "### Onde os cliques aconteceram (campanha do plano)", "",
+              "| Onde | Posição | Gasto | Impressões | Cliques no link | Custo por clique |", "|---|---|---|---|---|---|"]
+    print("\nOnde os cliques aconteceram:")
+    for d in sorted(dados, key=lambda d: -float(d.get("inline_link_clicks") or 0)):
+        gasto = float(d.get("spend") or 0)
+        cliques = int(float(d.get("inline_link_clicks") or 0))
+        cpc = brl(gasto / cliques) if cliques else "-"
+        linha = (f"| {PLATAFORMAS.get(d.get('publisher_platform'), d.get('publisher_platform'))} | "
+                 f"{d.get('platform_position', '').replace('_', ' ')} | {brl(gasto)} | {d.get('impressions', 0)} | "
+                 f"{cliques} | {cpc} |")
+        linhas.append(linha)
+        print(linha)
+    return linhas
 
 
 def main():
