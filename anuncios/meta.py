@@ -295,8 +295,11 @@ def criar(limite):
 
     campos = "id,name,optimization_goal,daily_budget,effective_status"
     existentes = {c["name"]: c for c in listar(f"{plano['campanha']}/adsets", fields=campos)}
+    # Cópia que ficou pela metade numa rodada que deu erro (ainda com o nome "... - Cópia"): reaproveita.
+    sobras = [c for nome, c in existentes.items() if nome not in {cj["nome"] for cj in plano["conjuntos"]}
+              and ("Cópia" in nome or "Copy" in nome) and c.get("effective_status") != "ACTIVE"]
     for cj in plano["conjuntos"]:
-        atual = existentes.get(cj["nome"])
+        atual = existentes.get(cj["nome"]) or (sobras.pop(0) if sobras else None)
         if atual and atual.get("effective_status") == "ACTIVE":
             print(f"Conjunto {cj['nome']} está ligado: não mexo nele (o que não serve se desliga, e o novo nasce do zero).")
             linhas.append(f"- {cj['nome']}: ligado, não mexi")
