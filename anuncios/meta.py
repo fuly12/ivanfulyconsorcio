@@ -2,7 +2,7 @@
 """Robô dos anúncios: fala com a API de Marketing da Meta pelo GitHub.
 
 Modos (variável MODO):
-  verificar  mostra o que a chave enxerga: contas de anúncios, páginas, Instagram e campanhas
+  verificar  mostra o que a chave enxerga: contas de anúncios, pixels, páginas, Instagram e campanhas
   modelo     mostra como a Meta guardou um anúncio feito à mão (variável ANUNCIO = nome ou id)
              e grava em anuncios/modelo.json, pra servir de molde pros próximos
   criar      cria os conjuntos e anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
@@ -129,6 +129,9 @@ def verificar():
                  f"{c.get('currency')}, {c.get('timezone_name')}")
         print(texto)
         linhas += [f"- {texto}", ""]
+        for px in pixels(c):
+            print(f"  {px}")
+            linhas.append(f"  - {px}")
         for camp in listar(f"{c['id']}/campaigns", fields="id,name,effective_status,objective,special_ad_categories"):
             print(f"  Campanha: {camp['name']} ({camp['id']}) {camp['effective_status']} {camp.get('objective')} "
                   f"{','.join(camp.get('special_ad_categories', []))}")
@@ -141,6 +144,27 @@ def verificar():
                     print(f"      Anúncio: {ad['name']} ({ad['id']}) {ad['effective_status']}")
                     linhas.append(f"      - Anúncio {ad['name']} ({ad['effective_status']})")
     resumo("\n".join(linhas))
+
+
+def pixels(conta):
+    """Pixels (conjuntos de dados) que a conta de anúncios ou o portfólio dela enxergam."""
+    achados = {}
+    origens = [f"{conta['id']}/adspixels"]
+    if conta.get("business"):
+        origens.append(f"{conta['business']['id']}/adspixels")
+    for origem in origens:
+        try:
+            for px in listar(origem, fields="id,name,creation_time,last_fired_time,is_unavailable"):
+                achados.setdefault(px["id"], px)
+        except SystemExit as e:
+            print(f"  Não deu pra ler os pixels em {origem.split('/')[0]}: {e}")
+    textos = []
+    for px in achados.values():
+        ultimo = (px.get("last_fired_time") or "nunca")[:10]
+        criado = (px.get("creation_time") or "?")[:10]
+        indisponivel = ", indisponível" if px.get("is_unavailable") else ""
+        textos.append(f"Pixel: {px.get('name')} ({px['id']}), criado em {criado}, último disparo: {ultimo}{indisponivel}")
+    return textos or ["Nenhum pixel encontrado pra esta conta."]
 
 
 def achar_anuncio(alvo):
