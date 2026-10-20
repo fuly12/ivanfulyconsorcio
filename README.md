@@ -4,6 +4,7 @@ Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 
 - `index.html`: a página inteira (textos, estilo e scripts).
 - Número do WhatsApp: constante `WHATSAPP_NUMBER` no início do script em `index.html` (só números, com 55 e DDD).
+- Pixel da Meta: constante `PIXEL_ID` no script de `index.html`. Só carrega depois que o visitante toca em "Pode" no aviso de cookies; conta as visitas (`PageView`) e os toques nos botões do WhatsApp (`Contact`). Não mexe nos anúncios.
 - `CNAME`: domínio usado pelo GitHub Pages.
 - `og-image.png`: imagem que aparece quando o link é compartilhado no WhatsApp e nas redes.
 
@@ -33,5 +34,5 @@ Site do Ivan Fuly, consultor de consórcios no Rio de Janeiro.
 ## Robô dos anúncios (Meta)
 
 - `anuncios/meta.py` e `.github/workflows/anuncios.yml`: rodam só quando chamados (Actions > Anúncios da Meta > Run workflow).
-- Modos: `verificar` (o que a chave enxerga), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique de cada anúncio, e onde os cliques aconteceram: Instagram, Facebook, apps parceiros).
+- Modos: `verificar` (o que a chave enxerga), `modelo` (grava em `anuncios/modelo.json` como a Meta guardou um anúncio feito à mão) e `relatorio` (gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram e quantas visitas e toques no WhatsApp o Pixel contou no site).
 - A chave fica no segredo `META_ADS_TOKEN`. O robô não liga anúncio nem mexe em verba.

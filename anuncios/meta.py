@@ -7,8 +7,8 @@ Modos (variável MODO):
              e grava em anuncios/modelo.json, pra servir de molde pros próximos
   criar      cria os conjuntos e anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
              (variável LIMITE = quantos anúncios no máximo nesta rodada; vazio = todos)
-  relatorio  gasto, alcance, cliques e custo por clique de cada anúncio, e onde os cliques aconteceram
-             (Instagram, Facebook, apps parceiros...) (variável PERIODO)
+  relatorio  gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram
+             (Instagram, Facebook, apps parceiros...) e o que o Pixel contou no site (variável PERIODO)
 
 Nada aqui liga anúncio: o que o robô cria fica pausado até você ligar no Gerenciador.
 """
@@ -349,12 +349,48 @@ def relatorio(periodo):
     print(fim)
     linhas += ["", fim]
     linhas += lugares(preset)
+    linhas += eventos_do_pixel(preset)
     resumo("\n".join(linhas))
 
 
 # Onde a campanha do plano apareceu: clique barato em app de terceiros quase nunca vira conversa.
 PLATAFORMAS = {"facebook": "Facebook", "instagram": "Instagram", "messenger": "Messenger",
                "audience_network": "Apps e sites parceiros (Audience Network)", "threads": "Threads"}
+
+
+EVENTOS = {"PageView": "Visitas ao site", "Contact": "Toques no botão do WhatsApp"}
+
+
+def eventos_do_pixel(preset):
+    """Quantas visitas e toques no WhatsApp o Pixel contou (só de quem tocou em "Pode" no aviso de cookies)."""
+    pixel = carregar(PLANO, {}).get("pixel")
+    if not pixel:
+        return []
+    agora = int(time.time())
+    hoje = agora - (agora - 3 * 3600) % 86400  # meia-noite no horário de Brasília
+    inicio, fim = {"today": (hoje, agora), "yesterday": (hoje - 86400, hoje), "last_7d": (hoje - 7 * 86400, hoje),
+                   "last_30d": (hoje - 30 * 86400, hoje)}.get(preset, (agora - 90 * 86400, agora))
+    print("\nO que o Pixel contou no site:")
+    try:
+        blocos = listar(f"{pixel}/stats", aggregation="event", start_time=inicio, end_time=fim)
+    except SystemExit as e:
+        print(f"Não deu pra ler o pixel: {e}")
+        return ["", f"Não deu pra ler o pixel: {e}"]
+    contagem = {}
+    for bloco in blocos:
+        for item in bloco.get("data", []):
+            contagem[item.get("value")] = contagem.get(item.get("value"), 0) + int(item.get("count") or 0)
+    linhas = ["", "### O que o Pixel contou no site", "",
+              "Só conta quem tocou em \"Pode\" no aviso de cookies.", ""]
+    for evento, nome in EVENTOS.items():
+        linha = f"- {nome}: {contagem.pop(evento, 0)}"
+        linhas.append(linha)
+        print(linha)
+    for evento, total in contagem.items():
+        linha = f"- {evento}: {total}"
+        linhas.append(linha)
+        print(linha)
+    return linhas
 
 
 def lugares(preset):
