@@ -7,6 +7,8 @@ Modos (variável MODO):
              e grava em anuncios/modelo.json, pra servir de molde pros próximos
   criar      cria a campanha, os conjuntos e os anúncios de anuncios/plano.json que ainda não existem, todos PAUSADOS
              (variável LIMITE = quantos anúncios no máximo nesta rodada; vazio = todos)
+  ligar      liga a campanha do plano: os anúncios, os conjuntos e por último a campanha (só quando o Ivan pede)
+  excluir_anterior  exclui a campanha anterior do plano (campanha_anterior), depois que a nova estiver ligada
   relatorio  gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram
              (Instagram, Facebook, apps parceiros...) e o que o Pixel contou no site (variável PERIODO)
 
@@ -361,6 +363,49 @@ def criar(limite):
     resumo("\n".join(linhas + ["", f"{feitos} anúncio(s) criado(s), todos pausados."]))
 
 
+def ligar():
+    """Liga a campanha do plano. Os anúncios e conjuntos primeiro, a campanha por último, pra tudo começar junto."""
+    plano = carregar(PLANO, {})
+    if not plano.get("campanha"):
+        raise SystemExit("Não há campanha no plano (rode o modo criar antes).")
+    camp = chamar("GET", plano["campanha"], fields="id,name,status")
+    linhas = [f"### Ligando a campanha {camp['name']}", ""]
+    for cj in listar(f"{camp['id']}/adsets", fields="id,name,status"):
+        for ad in listar(f"{cj['id']}/ads", fields="id,name,status"):
+            if ad["status"] != "ACTIVE":
+                chamar("POST", ad["id"], status="ACTIVE")
+            print(f"Anúncio ligado: {ad['name']}")
+            linhas.append(f"- Anúncio ligado: {ad['name']}")
+        if cj["status"] != "ACTIVE":
+            chamar("POST", cj["id"], status="ACTIVE")
+        print(f"Conjunto ligado: {cj['name']}")
+        linhas.append(f"- Conjunto ligado: **{cj['name']}**")
+    if camp["status"] != "ACTIVE":
+        chamar("POST", camp["id"], status="ACTIVE")
+    print(f"Campanha ligada: {camp['name']} ({camp['id']})")
+    resumo("\n".join(linhas + ["", f"Campanha ligada: **{camp['name']}**"]))
+
+
+def excluir_anterior():
+    """Exclui a campanha anterior, só se a nova já estiver ligada (pra nunca ficar sem anúncio rodando)."""
+    plano = carregar(PLANO, {})
+    antiga, nova = plano.get("campanha_anterior"), plano.get("campanha")
+    if not antiga or antiga == nova:
+        raise SystemExit("Não há campanha anterior no plano.")
+    if not nova or chamar("GET", nova, fields="status")["status"] != "ACTIVE":
+        raise SystemExit("A campanha nova ainda não está ligada. Ligue a nova antes de excluir a anterior.")
+    velha = chamar("GET", antiga, fields="id,name,status")
+    if velha["status"] != "DELETED":
+        chamar("POST", antiga, status="DELETED")
+    print(f"Campanha excluída: {velha['name']} ({antiga})")
+    resumo(f"Campanha excluída: **{velha['name']}**")
+
+
+# Anúncio excluído continua contando no relatório (gasto e cliques que já aconteceram).
+TODOS_OS_STATUS = ["ACTIVE", "PAUSED", "DELETED", "ARCHIVED", "PENDING_REVIEW", "DISAPPROVED", "PREAPPROVED",
+                   "PENDING_BILLING_INFO", "CAMPAIGN_PAUSED", "ADSET_PAUSED", "IN_PROCESS", "WITH_ISSUES"]
+
+
 def relatorio(periodo):
     preset = PERIODOS.get(periodo, "last_7d")
     linhas = [f"### Resultado dos anúncios ({periodo})", "",
@@ -368,7 +413,8 @@ def relatorio(periodo):
               "|---|---|---|---|---|---|---|"]
     total_gasto = total_cliques = 0.0
     for c in listar("me/adaccounts", fields="id"):
-        dados = listar(f"{c['id']}/insights", level="ad", date_preset=preset, fields=(
+        dados = listar(f"{c['id']}/insights", level="ad", date_preset=preset,
+                       filtering=[{"field": "ad.effective_status", "operator": "IN", "value": TODOS_OS_STATUS}], fields=(
             "campaign_name,adset_name,ad_name,spend,reach,impressions,frequency,inline_link_clicks,"
             "inline_link_click_ctr,cost_per_inline_link_click"))
         for d in sorted(dados, key=lambda d: (d.get("adset_name", ""), -float(d.get("inline_link_clicks") or 0))):
@@ -473,6 +519,10 @@ def main():
     elif modo == "criar":
         limite = os.environ.get("LIMITE", "").strip()
         criar(int(limite) if limite.isdigit() else 0)
+    elif modo == "ligar":
+        ligar()
+    elif modo == "excluir_anterior":
+        excluir_anterior()
     elif modo == "relatorio":
         relatorio(os.environ.get("PERIODO", "7dias").strip())
     else:

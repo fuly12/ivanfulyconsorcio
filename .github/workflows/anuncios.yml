@@ -4,12 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "verificar = mostra o que a chave enxerga; modelo = copia um anúncio feito à mão; criar = cria o que falta do plano (pausado); relatorio = resultado dos anúncios"
+        description: "verificar = mostra o que a chave enxerga; modelo = copia um anúncio feito à mão; criar = cria o que falta do plano (pausado); ligar = liga a campanha do plano; excluir_anterior = exclui a campanha anterior; relatorio = resultado dos anúncios"
         type: choice
         options:
           - verificar
           - modelo
           - criar
+          - ligar
+          - excluir_anterior
           - relatorio
         default: verificar
       anuncio:
@@ -53,6 +55,7 @@ jobs:
           ANUNCIO: ${{ github.event.inputs.anuncio }}
           PERIODO: ${{ github.event.inputs.periodo }}
           LIMITE: ${{ github.event.inputs.limite }}
+          PYTHONUNBUFFERED: "1"
 
       - name: Guardar o modelo e o registro dos anúncios
         if: always()
