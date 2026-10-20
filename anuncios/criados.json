@@ -1,0 +1,33 @@
+{
+  "conjuntos": {
+    "Casa própria": "120254073630540729",
+    "Sem juros": "120254073640860729",
+    "Confiança": "120254073645460729"
+  },
+  "anuncios": {
+    "Casa própria - 03 recibo": {
+      "id": "120254073636820729",
+      "criativo": "1095464986792253"
+    },
+    "Casa própria - 08 mapa do Rio": {
+      "id": "120254073638800729",
+      "criativo": "1124419523323590"
+    },
+    "Sem juros - 11 chega de adiar": {
+      "id": "120254073642170729",
+      "criativo": "1826609671678721"
+    },
+    "Sem juros - 02 você pode tudo azul": {
+      "id": "120254073644140729",
+      "criativo": "1655348436002692"
+    },
+    "Confiança - 12 carta": {
+      "id": "120254073732060729",
+      "criativo": "3711092362362971"
+    },
+    "Confiança - 09 quadro": {
+      "id": "120254073733950729",
+      "criativo": "1866130651040702"
+    }
+  }
+}
