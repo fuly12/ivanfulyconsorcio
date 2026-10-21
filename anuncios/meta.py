@@ -9,6 +9,7 @@ Modos (variável MODO):
              (variável LIMITE = quantos anúncios no máximo nesta rodada; vazio = todos)
   ligar      liga a campanha do plano: os anúncios, os conjuntos e por último a campanha (só quando o Ivan pede)
   desligar   pausa todas as campanhas ligadas da conta (não exclui nada)
+  excluir_criadas  exclui as campanhas do plano (a atual e a anterior); campanha feita à mão fica
   excluir_anterior  exclui a campanha anterior do plano (campanha_anterior), depois que a nova estiver ligada
   relatorio  gasto, alcance, cliques e custo por clique de cada anúncio, onde os cliques aconteceram
              (Instagram, Facebook, apps parceiros...) e o que o Pixel contou no site (variável PERIODO)
@@ -401,6 +402,21 @@ def desligar():
     resumo("\n".join(linhas))
 
 
+def excluir_criadas():
+    """Exclui só as campanhas do plano (campanha e campanha_anterior). Qualquer outra campanha da conta fica como está."""
+    plano = carregar(PLANO, {})
+    linhas = ["### Campanhas excluídas", ""]
+    for camp_id in dict.fromkeys(c for c in (plano.get("campanha"), plano.get("campanha_anterior")) if c):
+        camp = chamar("GET", camp_id, fields="id,name,status")
+        if camp["status"] == "DELETED":
+            print(f"Já estava excluída: {camp['name']} ({camp_id})")
+            continue
+        chamar("POST", camp_id, status="DELETED")
+        print(f"Campanha excluída: {camp['name']} ({camp_id})")
+        linhas.append(f"- Excluída: **{camp['name']}**")
+    resumo("\n".join(linhas))
+
+
 def excluir_anterior():
     """Exclui a campanha anterior, só se a nova já estiver ligada (pra nunca ficar sem anúncio rodando)."""
     plano = carregar(PLANO, {})
@@ -538,6 +554,8 @@ def main():
         ligar()
     elif modo == "desligar":
         desligar()
+    elif modo == "excluir_criadas":
+        excluir_criadas()
     elif modo == "excluir_anterior":
         excluir_anterior()
     elif modo == "relatorio":
