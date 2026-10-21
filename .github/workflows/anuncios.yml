@@ -4,13 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "verificar = mostra o que a chave enxerga; modelo = copia um anúncio feito à mão; criar = cria o que falta do plano (pausado); ligar = liga a campanha do plano; excluir_anterior = exclui a campanha anterior; relatorio = resultado dos anúncios"
+        description: "verificar = mostra o que a chave enxerga; modelo = copia um anúncio feito à mão; criar = cria o que falta do plano (pausado); ligar = liga a campanha do plano; desligar = pausa todas as campanhas; excluir_anterior = exclui a campanha anterior; relatorio = resultado dos anúncios"
         type: choice
         options:
           - verificar
           - modelo
           - criar
           - ligar
+          - desligar
           - excluir_anterior
           - relatorio
         default: verificar
