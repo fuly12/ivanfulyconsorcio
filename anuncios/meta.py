@@ -147,10 +147,14 @@ def verificar():
                 print(f"      Público: {publico(cj.get('targeting'))}")
                 linhas.append(f"    - Conjunto **{cj['name']}**: {reais(cj.get('daily_budget'))}/dia ({cj['effective_status']})")
                 linhas.append(f"      - Público: {publico(cj.get('targeting'))}")
-                for ad in listar(f"{cj['id']}/ads", fields="id,name,effective_status,configured_status,ad_review_feedback,issues_info"):
+                for ad in listar(f"{cj['id']}/ads", fields="id,name,effective_status,configured_status,ad_review_feedback,issues_info,"
+                                 "creative{object_story_spec,asset_feed_spec,link_url,object_url,title,body}"):
                     analise = situacao_da_analise(ad)
                     print(f"      Anúncio: {ad['name']} ({ad['id']}) {ad['effective_status']} · {analise}")
                     linhas.append(f"      - Anúncio {ad['name']} ({ad['effective_status']}) · {analise}")
+                    destino, titulo = destino_do_anuncio(ad.get("creative") or {})
+                    print(f"        Leva para: {destino or '?'} · Título: {titulo or '-'}")
+                    linhas.append(f"        - Leva para: {destino or '?'} · Título: {titulo or '-'}")
     resumo("\n".join(linhas))
 
 
@@ -171,6 +175,21 @@ def lugares_do_alvo(geo):
         nome = p.get("name") or p.get("address_string") or f"{p.get('latitude')}, {p.get('longitude')}"
         partes.append(f"ponto {nome} (raio {p.get('radius')} {p.get('distance_unit', '')})")
     return ", ".join(partes)
+
+
+def destino_do_anuncio(criativo):
+    """Link para onde o anúncio leva e o título, onde quer que a Meta tenha guardado."""
+    historia = criativo.get("object_story_spec") or {}
+    dados = historia.get("link_data") or (historia.get("video_data") or {})
+    chamada = (dados.get("call_to_action") or {}).get("value") or {}
+    feed = criativo.get("asset_feed_spec") or {}
+    destino = (dados.get("link") or chamada.get("link") or criativo.get("link_url") or criativo.get("object_url")
+               or next((u.get("website_url") for u in feed.get("link_urls", []) if u.get("website_url")), None))
+    if chamada.get("app_destination") or chamada.get("whatsapp_number"):
+        destino = f"WhatsApp {chamada.get('whatsapp_number') or ''}".strip() + (f" (e site {destino})" if destino else "")
+    titulo = (dados.get("name") or dados.get("title") or criativo.get("title")
+              or next((t.get("text") for t in feed.get("titles", []) if t.get("text")), None))
+    return destino, titulo
 
 
 def publico(alvo):
