@@ -141,15 +141,46 @@ def verificar():
             print(f"  Campanha: {camp['name']} ({camp['id']}) {camp['effective_status']} {camp.get('objective')} "
                   f"{','.join(camp.get('special_ad_categories', []))}")
             linhas.append(f"  - Campanha **{camp['name']}** ({camp['effective_status']})")
-            for cj in listar(f"{camp['id']}/adsets", fields="id,name,effective_status,daily_budget,optimization_goal"):
+            for cj in listar(f"{camp['id']}/adsets", fields="id,name,effective_status,daily_budget,optimization_goal,targeting"):
                 print(f"    Conjunto: {cj['name']} ({cj['id']}) {cj['effective_status']} {reais(cj.get('daily_budget'))}/dia "
                       f"{cj.get('optimization_goal')}")
+                print(f"      Público: {publico(cj.get('targeting'))}")
                 linhas.append(f"    - Conjunto **{cj['name']}**: {reais(cj.get('daily_budget'))}/dia ({cj['effective_status']})")
+                linhas.append(f"      - Público: {publico(cj.get('targeting'))}")
                 for ad in listar(f"{cj['id']}/ads", fields="id,name,effective_status,configured_status,ad_review_feedback,issues_info"):
                     analise = situacao_da_analise(ad)
                     print(f"      Anúncio: {ad['name']} ({ad['id']}) {ad['effective_status']} · {analise}")
                     linhas.append(f"      - Anúncio {ad['name']} ({ad['effective_status']}) · {analise}")
     resumo("\n".join(linhas))
+
+
+def lugares_do_alvo(geo):
+    partes = []
+    if geo.get("countries"):
+        partes.append("país " + ", ".join(geo["countries"]))
+    for r in geo.get("regions", []):
+        partes.append(f"estado {r.get('name')}")
+    for c in geo.get("cities", []):
+        raio = f" + {c['radius']} {c.get('distance_unit', '')}" if c.get("radius") else ""
+        partes.append(f"cidade {c.get('name')}{' (' + c['region'] + ')' if c.get('region') else ''}{raio}")
+    for z in geo.get("zips", []):
+        partes.append(f"CEP {z.get('name') or z.get('key')}")
+    for m in geo.get("geo_markets", []) + geo.get("metros", []):
+        partes.append(f"região {m.get('name') or m.get('key')}")
+    for p in geo.get("places", []) + geo.get("custom_locations", []):
+        nome = p.get("name") or p.get("address_string") or f"{p.get('latitude')}, {p.get('longitude')}"
+        partes.append(f"ponto {nome} (raio {p.get('radius')} {p.get('distance_unit', '')})")
+    return ", ".join(partes)
+
+
+def publico(alvo):
+    """Resumo do público: onde, quem fica de fora e idade."""
+    alvo = alvo or {}
+    texto = lugares_do_alvo(alvo.get("geo_locations") or {}) or "sem local definido"
+    fora = lugares_do_alvo(alvo.get("excluded_geo_locations") or {})
+    if fora:
+        texto += f"; fora: {fora}"
+    return texto + f"; idade {alvo.get('age_min', '?')} a {alvo.get('age_max', '?')}"
 
 
 # Situação da análise da Meta, pelo status efetivo do anúncio.
