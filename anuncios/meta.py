@@ -145,10 +145,31 @@ def verificar():
                 print(f"    Conjunto: {cj['name']} ({cj['id']}) {cj['effective_status']} {reais(cj.get('daily_budget'))}/dia "
                       f"{cj.get('optimization_goal')}")
                 linhas.append(f"    - Conjunto **{cj['name']}**: {reais(cj.get('daily_budget'))}/dia ({cj['effective_status']})")
-                for ad in listar(f"{cj['id']}/ads", fields="id,name,effective_status"):
-                    print(f"      Anúncio: {ad['name']} ({ad['id']}) {ad['effective_status']}")
-                    linhas.append(f"      - Anúncio {ad['name']} ({ad['effective_status']})")
+                for ad in listar(f"{cj['id']}/ads", fields="id,name,effective_status,configured_status,ad_review_feedback,issues_info"):
+                    analise = situacao_da_analise(ad)
+                    print(f"      Anúncio: {ad['name']} ({ad['id']}) {ad['effective_status']} · {analise}")
+                    linhas.append(f"      - Anúncio {ad['name']} ({ad['effective_status']}) · {analise}")
     resumo("\n".join(linhas))
+
+
+# Situação da análise da Meta, pelo status efetivo do anúncio.
+ANALISE = {"PENDING_REVIEW": "em análise pela Meta", "IN_PROCESS": "em análise pela Meta", "DISAPPROVED": "REPROVADO pela Meta",
+           "WITH_ISSUES": "com problema", "PREAPPROVED": "pré-aprovado", "PENDING_BILLING_INFO": "falta forma de pagamento"}
+
+
+def situacao_da_analise(ad):
+    motivos = []
+    for nome, texto in ((ad.get("ad_review_feedback") or {}).get("global") or {}).items():
+        motivos.append(f"{nome}: {texto}")
+    for problema in ad.get("issues_info") or []:
+        motivos.append(problema.get("error_summary") or problema.get("error_message") or "")
+    situacao = ANALISE.get(ad.get("effective_status"))
+    if not situacao:
+        if ad.get("effective_status") == "ACTIVE":
+            situacao = "aprovado e rodando" if not motivos else "rodando, com aviso"
+        else:
+            situacao = "desligado, sem reprovação registrada" if not motivos else "desligado, com aviso"
+    return situacao + (f" ({'; '.join(m for m in motivos if m)})" if motivos else "")
 
 
 def pixels(conta):
